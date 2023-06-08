@@ -3,7 +3,7 @@ package Forum
 import (
 	"fmt"
 	"log"
-
+	//time jljljljl
 	"github.com/jinzhu/gorm/dialects/sqlite"
 )
 
@@ -15,6 +15,8 @@ type Channel struct {
 }
 
 type User struct {
+	cd
+
 	gorm.Model
 	Email    string
 	Username string
