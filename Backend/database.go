@@ -3,9 +3,8 @@ package Forum
 import (
 	"fmt"
 	"log"
-
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	//time jljljljl
+	"github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 // STRUTURE BASE DE DONNEE //
@@ -16,6 +15,8 @@ type Channel struct {
 }
 
 type User struct {
+	cd
+
 	gorm.Model
 	Email    string
 	Username string
