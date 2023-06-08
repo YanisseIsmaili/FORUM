@@ -1,7 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
  
 // open the database
-let db = new sqlite3.Database('forum_BDD.sqlite');
+let db = new sqlite3.Database('database.go');
  
 let sql = `SELECT id, nom FROM societes WHERE id  = ?`;
 let Id = 1;
