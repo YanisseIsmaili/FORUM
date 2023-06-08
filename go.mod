@@ -1,4 +1,5 @@
-module forum
+use ./Forum
+
 
 go 1.20
 
