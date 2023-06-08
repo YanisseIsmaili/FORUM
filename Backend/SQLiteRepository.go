@@ -1,61 +1,57 @@
 package Forum
 
 import (
-    "database/sql"
-    "errors"
-	// "fmt"
-	// "log"
-    // "github.com/mattn/go-sqlite3"
+	"sqlite"
+	"time"
 )
 
-var (
-    ErrDuplicate    = errors.New("duplicate exists")
-    ErrNotExists    = errors.New("not exists")
-    ErrUpdateFailed = errors.New("update failed")
-    ErrDeleteFailed = errors.New("delete failed")
-)
-
-type SQLiteRepository struct {
-    db *sql.DB
-}
-// regarde si il y a des erreurs dans la BDD
-
-//function nouveau 
-func NewSQLiteRepository(db *sql.DB) *SQLiteRepository {
-    return &SQLiteRepository{
-        db: db,
-    }
+type User struct {
+	ID          int       `json:"id"`
+	Email       string    `json:"email"`
+	Username    string    `json:"username"`
+	Password    string    `json:"password"`
+	Role        string    `json:"role"`
+	CreatedDate time.Time `json:"created_date"`
 }
 
-func (r *SQLiteRepository) Migrate() error {
-    query := `
+type Post struct {
+	ID          int        `json:"id"`
+	UserID      int        `json:"user_id"`
+	Title       string     `json:"title"`
+	Content     string     `json:"content"`
+	Likes       int        `json:"likes"`
+	Dislikes    int        `json:"dislikes"`
+	Categories  []string   `json:"categories"`
+	Comments    []*Comment `json:"comments"`
+	CreatedDate time.Time  `json:"created_date"`
+	UpdatedDate time.Time  `json:"updated_date"`
 
-    CREATE DATABASE FORUM; -- Crée une BDD --
+	AuthorUsername string
+	FormatTime     string
+	Images         []string
+}
 
-    USE FORUM; -- Entre dans la base de données --
-    
-    CREATE TABLE USER (
-    id VARCHAR(255) PRIMARY KEY, -- uid tomorrow
-    password VARCHAR(255),
-    email VARCHAR(255),
-    pseudo VARCHAR(255)
-    );
-    
-    CREATE TABLE SUUSER (
-    id VARCHAR(255) PRIMARY KEY, --uid tomorrow
-    password VARCHAR(255),
-    email VARCHAR(255),
-    pseudo VARCHAR(255)
-    );
-    
-    CREATE TABLE LOCATIONUSER (
-    id VARCHAR(255) PRIMARY KEY, -- uid tomorrow
-    country VARCHAR(255)
-    );
-    
-    
-`
+type Comment struct {
+	ID          int       `json:"id"`
+	UserID      int       `json:"user_id"`
+	PostID      int       `json:"post_id"`
+	Content     string    `json:"content"`
+	Likes       int       `json:"likes"`
+	Dislikes    int       `json:"dislikes"`
+	CreatedDate time.Time `json:"created_date"`
+	UpdatedDate time.Time `json:"updated_date"`
 
-    _, err := r.db.Exec(query)
-    return err
+	AuthorUsername string
+	FormatTime     string
+}
+
+type Category struct {
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
+}
+
+type Session struct {
+	UserID  int       `json:"user_id"`
+	Token   string    `json:"token"`
+	ExpTime time.Time `json:"exp_time"`
 }
