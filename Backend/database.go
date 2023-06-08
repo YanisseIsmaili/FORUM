@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/jinzhu/gorm/dialects/sqlite"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 // STRUTURE BASE DE DONNEE //
