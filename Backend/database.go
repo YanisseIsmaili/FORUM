@@ -12,9 +12,9 @@ import (
 // TABLE USERS
 type Users struct {
 	gorm.Model
-	Username string
-	Email    string
-	Password string
+	Username string `form:"username"`
+	Email    string `form:"email"`
+	Password string `form:"password"`
 }
 
 // TABLE POSTS
