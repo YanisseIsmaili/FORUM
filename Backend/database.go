@@ -83,12 +83,23 @@ func data() {
 
 	// Je supprime le fichier pour éviter les doublons. //
 	os.Remove("nerdz.db")
+}
 
+func creatBdd() {
+	dbHost := "localhost"
+	dbPort := 3306
 	log.Println("Creating nerdz.db...")
-	file, err := os.Create("nerds.db") // Crée un fichier sqlite
+	file, err := os.Create("nerds.db") // Crée un fichier sqlite //
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 	file.Close()
-	log.Println("nerdz.db created")
+	log.Println("nerdz.db est crée")
+
+	// Vérification de la connexion de la BDD //
+	err = db.Ping()
+	if err != nil {
+		log.Fatal("La base de données n'est pas disponible.")
+	}
+	fmt.Println("La base de données est crée chackal.")
 }
