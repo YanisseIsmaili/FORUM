@@ -23,8 +23,8 @@ type Posts struct {
 	Title    string
 	Content  string
 	UserID   uint
-	User     User
-	Comments []Comment
+	User     Users
+	Comments []Comments
 }
 
 // TABLE COMMENTS
@@ -32,9 +32,9 @@ type Comments struct {
 	gorm.Model
 	Content string
 	UserID  uint
-	User    User
+	User    Users
 	PostID  uint
-	Post    Post
+	Post    Posts
 }
 
 // Fonction pour créer et initialiser la base de données
@@ -47,25 +47,25 @@ func createDB() {
 	}
 
 	// Création des tables s'il n'existent pas déjà
-	err = db.AutoMigrate(&User{}, &Post{}, &Comment{})
+	err = db.AutoMigrate(&Users{}, &Posts{}, &Comments{})
 	if err != nil {
 		log.Fatal("Erreur lors de la création des tables:", err)
 	}
 
 	// Création d'un utilisateur
-	user := User{Username: "Clement Garcia", Email: "clement.garcia@gmail.com", Password: "1234"}
+	user := Users{Username: "Clement Garcia", Email: "clement.garcia@gmail.com", Password: "1234"}
 	db.Create(&user)
 
 	// Création d'un post
-	post := Post{Title: "Mon Premier Post", Content: "Hello, World!", UserID: user.ID}
+	post := Posts{Title: "Mon Premier Post", Content: "Hello, World!", UserID: user.ID}
 	db.Create(&post)
 
 	// Création d'un commentaire
-	comment := Comment{Content: "Cool post !", UserID: user.ID, PostID: post.ID}
+	comment := Comments{Content: "Cool post !", UserID: user.ID, PostID: post.ID}
 	db.Create(&comment)
 
 	// Récupération d'un post avec ses commentaires
-	var result Post
+	var result Posts
 	db.Preload("Comments").First(&result, post.ID)
 
 	fmt.Println(result)
