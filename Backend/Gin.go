@@ -66,4 +66,3 @@ func setupRouter() *gin.Engine {
 
 	return r
 }
-

@@ -3,19 +3,22 @@ package Forum
 import (
 	"fmt"
 	"log"
+	"os"
 
-	"github.com/jinzhu/gorm/dialects/sqlite"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-// TABLE USERS //
+// TABLE USERS
 type Users struct {
 	gorm.Model
-	Name     string
+	Username string
 	Email    string
 	Password string
 }
 
-type User struct {
+// TABLE POSTS
+type Posts struct {
 	gorm.Model
 	Title    string
 	Content  string
@@ -24,8 +27,8 @@ type User struct {
 	Comments []Comment
 }
 
-// Commentaires //
-type Commentaires struct {
+// TABLE COMMENTS
+type Comments struct {
 	gorm.Model
 	Content string
 	UserID  uint
@@ -34,71 +37,48 @@ type Commentaires struct {
 	Post    Post
 }
 
-// LocaUser //
-type LocationUser struct {
-	UserID  uint
-	User    user
-	Comment []comment
-}
-
-// CompteAdmin //
-type CompteAdmin struct {
-	gorm.Model
-	Name     string
-	Email    string
-	Password string
-}
-
-// Fonction DATA
-
-func data() {
-	dsn := "localhost:8080"
-
+// Fonction pour créer et initialiser la base de données
+func createDB() {
+	// Connexion à la base de données
+	dsn := "user:password@tcp(localhost:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic("erreur de connection à la database")
+		log.Fatal("Erreur de connexion à la base de données:", err)
 	}
 
-	// Migration
-	db.AutoMigrate(&User{}, &Post{}, &Comment{})
+	// Création des tables s'il n'existent pas déjà
+	err = db.AutoMigrate(&User{}, &Post{}, &Comment{})
+	if err != nil {
+		log.Fatal("Erreur lors de la création des tables:", err)
+	}
 
-	// Crée USER
-	user := User{Name: "Clement Garcia", Email: "clement.garcia@gmail.com", Password: "1234"}
+	// Création d'un utilisateur
+	user := User{Username: "Clement Garcia", Email: "clement.garcia@gmail.com", Password: "1234"}
 	db.Create(&user)
 
-	// Crée un post
+	// Création d'un post
 	post := Post{Title: "Mon Premier Post", Content: "Hello, World!", UserID: user.ID}
 	db.Create(&post)
 
-	// Crée un commentaire
-	comment := Comment{Content: "Cool post sa !", UserID: user.ID, PostID: post.ID}
+	// Création d'un commentaire
+	comment := Comment{Content: "Cool post !", UserID: user.ID, PostID: post.ID}
 	db.Create(&comment)
 
-	// Requête avec commentaires
+	// Récupération d'un post avec ses commentaires
 	var result Post
-	db.Preload("Commentaire").First(&result, post.ID)
+	db.Preload("Comments").First(&result, post.ID)
 
 	fmt.Println(result)
 
-	// Je supprime le fichier pour éviter les doublons. //
-	os.Remove("nerdz.db")
-}
-
-func creatBdd() {
-	dbHost := "localhost"
-	dbPort := 3306
-	log.Println("Creating nerdz.db...")
-	file, err := os.Create("nerds.db") // Crée un fichier sqlite //
+	// Fermeture de la connexion à la base de données
+	sqlDB, err := db.DB()
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatal("Erreur lors de la fermeture de la connexion à la base de données:", err)
 	}
-	file.Close()
-	log.Println("nerdz.db est crée")
-
-	// Vérification de la connexion de la BDD //
-	err = db.Ping()
+	sqlDB.Close()
+	// Suppression du fichier de base de données pour éviter les doublons
+	err = os.Remove("nerdz.db")
 	if err != nil {
-		log.Fatal("La base de données n'est pas disponible.")
+		log.Fatal("Erreur lors de la suppression du fichier de base de données:", err)
 	}
-	fmt.Println("La base de données est crée chackal.")
 }
