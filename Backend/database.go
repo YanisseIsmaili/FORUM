@@ -3,97 +3,105 @@ package Forum
 import (
 	"fmt"
 	"log"
+	"os"
 
-	"github.com/jinzhu/gorm/dialects/sqlite"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-// STRUTURE BASE DE DONNEE //
-type Channel struct {
+// TABLE USERS //
+type Users struct {
 	gorm.Model
-	Name        string
-	Description string
-}
-
-type User struct {
-	gorm.Model
+	Name     string
 	Email    string
-	Username string
+	Password string
 }
 
-type Message struct {
+// TABLE POSTES //
+type Posts struct {
 	gorm.Model
-	Content   string
-	UserID    uint
-	ChannelID uint
-	User      User
-	Channel   Channel
+	Title    string
+	Content  string
+	UserID   uint
+	User     User
+	Comments []Comment
 }
 
-func setup(db *gorm.DB) {
-	db.AutoMigrate(&Channel{}, &User{}, &Message{})
-	seed(db)
+// Commentaires //
+type Commentaires struct {
+	gorm.Model
+	Content string
+	UserID  uint
+	User    User
+	PostID  uint
+	Post    Post
 }
 
-func seed(db *gorm.DB) {
-	channels := []Channel{
-		{Name: "General", Description: "General Discussions"},
-		{Name: "Off-Topic", Description: "Weird stuff goes here"},
-		{Name: "Suggestions", Description: "Video suggestions go here"},
-	}
-	for _, c := range channels {
-		db.Create(&c)
-	}
-	users := []User{
-		{Email: "test@test.com", Username: "Joe420"},
-		{Email: "yes@yes.com", Username: "Bob"},
-	}
-	for _, u := range users {
-		db.Create(&u)
-	}
-	var generalChat, suggestionsChat Channel
-	db.First(&generalChat, "Name = ?", "General")
-	db.First(&suggestionsChat, "Name = ?", "Suggestions")
-	var joe, bob User
-	db.First(&joe, "Username = ?", "Joe420")
-	db.First(&bob, "Username = ?", "Bob")
-	messages := []Message{
-		{Content: "Hello!", Channel: generalChat, User: joe},
-		{Content: "What up", Channel: generalChat, User: bob},
-		{Content: "Make more go videos", Channel: suggestionsChat, User: joe},
-	}
-	for _, m := range messages {
-		db.Create(&m)
-	}
+// LocaUser //
+type LocationUser struct {
+	UserID  uint
+	User    user
+	Comment []comment
 }
 
-// BASE DE DONNE  //
-func InputWithDatabase() {
-	db, err := gorm.Open("sqlite3", "test.db")
+// CompteAdmin //
+type CompteAdmin struct {
+	gorm.Model
+	Name     string
+	Email    string
+	Password string
+}
+
+// Fonction DATA
+
+func data() {
+	dsn := "localhost:8080"
+
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic("Ne peux pas être connecter")
+		panic("erreur de connection à la database")
 	}
-	defer db.Close()
-	db.LogMode(true)
-	setup(db)
-	var users []User
-	db.Find(&users)
-	for _, u := range users {
-		fmt.Println("Email:", u.Email, "Username:", u.Username)
-	}
-	var messages []Message
-	db.Model(users[0]).Related(&messages)
-	for _, m := range messages {
-		fmt.Println("Message:", m.Content, "Sender:", m.UserID)
-	}
-	doError(db)
+
+	// Migration
+	db.AutoMigrate(&User{}, &Post{}, &Comment{})
+
+	// Crée USER
+	user := User{Name: "Clement Garcia", Email: "clement.garcia@gmail.com", Password: "1234"}
+	db.Create(&user)
+
+	// Crée un post
+	post := Post{Title: "Mon Premier Post", Content: "Hello, World!", UserID: user.ID}
+	db.Create(&post)
+
+	// Crée un commentaire
+	comment := Comment{Content: "Cool post sa !", UserID: user.ID, PostID: post.ID}
+	db.Create(&comment)
+
+	// Requête avec commentaires
+	var result Post
+	db.Preload("Commentaire").First(&result, post.ID)
+
+	fmt.Println(result)
+
+	// Je supprime le fichier pour éviter les doublons. //
+	os.Remove("nerdz.db")
 }
 
-// ERROR BASE DE DONNEE //
-func doError(db *gorm.DB) {
-	var fred User
-	if err := db.Where("username = ?", "Fred").First(&fred).Error; err != nil {
-		log.Fatalf("Error when loading user: %s", err)
+func creatBdd() {
+	dbHost := "localhost"
+	dbPort := 3306
+	log.Println("Creating nerdz.db...")
+	file, err := os.Create("nerds.db") // Crée un fichier sqlite //
+	if err != nil {
+		log.Fatal(err.Error())
 	}
-}
+	file.Close()
+	log.Println("nerdz.db est crée")
 
-// TEST COMMIT //
+	// Vérification de la connexion de la BDD //
+	err = db.Ping()
+	if err != nil {
+		log.Fatal("La base de données n'est pas disponible.")
+	}
+	fmt.Println("La base de données est crée chackal.")
+}
