@@ -40,13 +40,13 @@ type Comments struct {
 // Fonction pour créer et initialiser la base de données
 func createDB() {
 	// Connexion à la base de données
-	dsn := "user:password@tcp(localhost:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "Forum:1234@tcp(127.0.0.1:8080)/NerdzMethology?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Erreur de connexion à la base de données:", err)
 	}
 
-	// Création des tables s'il n'existent pas déjà
+	// Création des tables s'ils n'existent pas déjà
 	err = db.AutoMigrate(&Users{}, &Posts{}, &Comments{})
 	if err != nil {
 		log.Fatal("Erreur lors de la création des tables:", err)
