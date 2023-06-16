@@ -4,33 +4,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forum</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.4/gsap.min.js"></script>
-    
+    <title>Création de Poste</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 
-
 <body>
-    <!--search bar-->
-    <div class="topnav">
-        <a class="active" href="#home">Home</a>
-        <a href="">About</a>
-        <a href="#contact">Contact</a>
-        <input type="text" placeholder="Search..">
-      </div> 
 
-    <h1>Nerd Mythology.com</h1>
-    <p>Le mot à deviner :</p>
-	<p> {{ .Valeur }} <p>
-		<form method="post" action="/">
-			<p>
-				<label>Entrez une Lettre</label> 
-				<input name="text" type="text" required pattern="^[a-zA-Z]$"/>
-				<input type="submit" value="Envoyer">
-			0.
-			</p>
-      </div>
+    <h1>Création de Poste</h1>
+
+    <form id="post-form">
+        <div>
+            <label for="post-title">Titre :</label>
+            <input type="text" id="post-title" name="post-title" required>
+        </div>
+        <div>
+            <label for="post-content">Contenu :</label>
+            <textarea id="post-content" name="post-content" rows="5" required></textarea>
+        </div>
+        <label for="pet-select">Choose spec:</label>
+
+<select name="spec" id="spec-select">
+    <option value="">--Please choose an option--</option>
+    <option value="Info">Informatique</option>
+    <option value="Audio">Audio</option>
+    <option value="Visual">Visual</option>
+    <option value="Makette">markete</option>
+    <option value="Archi">Archi</option>
+    <option value="Cyber">cyber</option>
+</select>
+
+        <button type="submit">Créer le Poste</button>
+    </form>
+
 </body>
-
 </html>
