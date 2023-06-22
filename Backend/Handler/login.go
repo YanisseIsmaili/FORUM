@@ -1,6 +1,7 @@
 package Forum
 
 import (
+	Database "Forum/Backend/Database"
 	"log"
 	"net/http"
 
@@ -10,8 +11,8 @@ import (
 )
 
 func Register() {
-
-	dsn := "gorm.db"
+	// crée la base de donnée :
+	dsn := "NerdMythology.db"
 	db, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Erreur de connexion à la base de données:", err)
@@ -34,23 +35,23 @@ func Register() {
 		password := c.PostForm("password")
 
 		// Création d'un nouvel utilisateur avec les données récupérées
-		user := Users{
+		user := Database.Users{
 			Username: username,
 			Email:    email,
 			Password: password,
 		}
 
 		// Appel à la fonction createDB() pour créer et initialiser l'utilisateur
-		CreateDB(db)
+		Database.CreateDB(db)
 		err = db.Create(&user).Error
 		if err != nil {
 			log.Fatal("Erreur lors de l'insertion de l'utilisateur dans la base de données:", err)
 		}
 
 		// Fermeture de la connexion à la base de données
-		sqlDB, err := db.DB() 
+		sqlDB, err := db.DB()
 		if err != nil {
-			log.Fatal("Erreur lors de la fermeture de la connexion à la base de données:", err) 
+			log.Fatal("Erreur lors de la fermeture de la connexion à la base de données:", err)
 		}
 		sqlDB.Close()
 
@@ -60,7 +61,7 @@ func Register() {
 	})
 
 	r.GET("/index", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", gin.H{}) 
+		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
 
 	r.Run()

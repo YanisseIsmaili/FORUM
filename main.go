@@ -1,10 +1,10 @@
 package main
 
 import (
-	Forum "Forum/Backend"
+	Handler "Forum/Backend/Handler"
 )
 
 func main() {
 
-	Forum.Register() // for register an users
+	Handler.Register() // for register an users
 }
