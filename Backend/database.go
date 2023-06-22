@@ -2,26 +2,10 @@ package Forum
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"path/filepath"
-	"runtime"
-	"strings"
-	"time"
-	"Forum/Backend/Config"
-	"MySql"
-	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
-	"github.com/jinzhu/gorm"
-	"gorm.io/driver/mysql"
+
+
 	"gorm.io/gorm"
-	"golang.org/x/crypto/bcrypt"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
-)
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+
 )
 
 // TABLE USERS
@@ -53,65 +37,31 @@ type Comments struct {
 }
 
 // Fonction pour créer et initialiser la base de données
-func CreateDB() {
-	// Connexion à la base de données
-	dsn := "Forum:1234@tcp(localhost:3306)/NerdzMethology?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Erreur de connexion à la base de données:", err)
-	}
+func CreateDB(db *gorm.DB) {
 	// Création des tables
 	db.AutoMigrate(&Users{}, &Posts{}, &Comments{})
 }
 
 // Fonction pour ajouter un utilisateur
-func AddUser(username string, email string, password string) {
-	// Connexion à la base de données
-	dsn := "Forum:1234@tcp(localhost:8080)/NerdzMethology?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Erreur de connexion à la base de données:", err)
-	}
-
+func AddUser(username string, email string, password string, db *gorm.DB) {
 	// Ajout de l'utilisateur
 	db.Create(&Users{Username: username, Email: email, Password: password})
 }
 
 // Fonction pour ajouter un post
-func AddPost(title string, content string, userID uint) {
-	// Connexion à la base de données
-	dsn := "Forum:1234@tcp(localhost:8080)/NerdzMethology?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Erreur de connexion à la base de données:", err)
-	}
-
+func AddPost(title string, content string, userID uint, db *gorm.DB) {
 	// Ajout du post
 	db.Create(&Posts{Title: title, Content: content, UserID: userID})
 }
 
 // Fonction pour ajouter un commentaire
-func AddComment(content string, userID uint, postID uint) {
-	// Connexion à la base de données
-	dsn := "Forum:1234@tcp(localhost:8080)/NerdzMethology?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Erreur de connexion à la base de données:", err)
-	}
-
+func AddComment(content string, userID uint, postID uint, db *gorm.DB) {
 	// Ajout du commentaire
 	db.Create(&Comments{Content: content, UserID: userID, PostID: postID})
 }
 
 // Fonction pour afficher tous les utilisateurs
-func ShowUsers() {
-	// Connexion à la base de données
-	dsn := "Forum:1234@tcp(localhost:8080)/NerdzMethology?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Erreur de connexion à la base de données:", err)
-	}
-
+func ShowUsers(db *gorm.DB) {
 	// Affichage des utilisateurs
 	var users []Users
 	db.Find(&users)
@@ -119,13 +69,7 @@ func ShowUsers() {
 }
 
 // Fonction pour afficher tous les posts
-func ShowPosts() {
-	// Connexion à la base de données
-	dsn := "Forum:1234@tcp(localhost:8080)/NerdzMethology?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Erreur de connexion à la base de données:", err)
-	}
+func ShowPosts(db *gorm.DB) {
 
 	// Affichage des posts
 	var posts []Posts
@@ -134,14 +78,7 @@ func ShowPosts() {
 }
 
 // Fonction pour afficher tous les commentaires
-func ShowComments() {
-	// Connexion à la base de données
-	dsn := "Forum:1234@tcp(localhost:8080)/NerdzMethology?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Erreur de connexion à la base de données:", err)
-	}
-
+func ShowComments(db *gorm.DB) {
 	// Affichage des commentaires
 	var comments []Comments
 	db.Find(&comments)

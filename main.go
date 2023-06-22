@@ -6,9 +6,17 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func main() {
+	dsn := "gorm.db"
+	db, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal("Erreur de connexion à la base de données:", err)
+	}
+
 	// route par default :
 	r := gin.Default()
 	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
@@ -26,11 +34,37 @@ func main() {
 		email := c.PostForm("email")
 		password := c.PostForm("password")
 
-		c.String(200, "Hello %s", username, email, password)
+		// Création d'un nouvel utilisateur avec les données récupérées
+		user := Forum.Users{
+			Username: username,
+			Email:    email,
+			Password: password,
+		}
+
+		// Appel à la fonction createDB() pour créer et initialiser la base de données
+		Forum.CreateDB(db)
+
+		// Connexion à la base de données
+
+		// Insertion de l'utilisateur dans la base de données
+		err = db.Create(&user).Error
+		if err != nil {
+			log.Fatal("Erreur lors de l'insertion de l'utilisateur dans la base de données:", err)
+		}
+
+		// Fermeture de la connexion à la base de données
+		sqlDB, err := db.DB()
+		if err != nil {
+			log.Fatal("Erreur lors de la fermeture de la connexion à la base de données:", err)
+		}
+		sqlDB.Close()
+
+		// Réponse au client
+		c.String(http.StatusOK, "Données insérées dans la base de données.")
 	})
 
 	r.Run()
 
-	Forum.CreateDB()
+	Forum.CreateDB(db)
 
 }
