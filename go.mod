@@ -5,12 +5,13 @@ go 1.20
 require (
 	github.com/gin-gonic/gin v1.9.1
 	gorm.io/driver/mysql v1.5.1
-	gorm.io/gorm v1.25.1
+	gorm.io/gorm v1.25.2-0.20230530020048-26663ab9bf55
 )
 
 require (
 	github.com/jinzhu/gorm v1.9.16 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
+	gorm.io/driver/sqlite v1.5.2 // indirect
 )
 
 require (
