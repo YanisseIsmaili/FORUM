@@ -3,9 +3,7 @@ package Forum
 import (
 	"fmt"
 
-
 	"gorm.io/gorm"
-
 )
 
 // TABLE USERS
