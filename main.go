@@ -1,11 +1,11 @@
 package main
 
 import (
+	 Forum "Forum/Backend"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	
 )
 
 func main() {
@@ -25,11 +25,13 @@ func main() {
 		username := c.PostForm("username")
 		email := c.PostForm("email")
 		password := c.PostForm("password")
-		
+
 		c.String(200, "Hello %s", username, email, password)
 	})
 
 	r.Run()
+Forum.createDB()
 	
+
+
 }
-	
