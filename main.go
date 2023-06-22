@@ -25,11 +25,10 @@ func main() {
 	r.StaticFile("/styles.css", "./Frontend/styles.css") // permet de link le fichier css
 	r.LoadHTMLGlob("Frontend/*")                         // permet d'allez chercher
 	r.GET("/loging", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "log&Signup.html", gin.H{
-			"title": "Main website",
-		})
+		c.HTML(http.StatusOK, "log&Signup.html", gin.H{})
 	})
-	r.POST("/submit", func(c *gin.Context) {
+	r.POST("/loging", func(c *gin.Context) {
+		
 		username := c.PostForm("username")
 		email := c.PostForm("email")
 		password := c.PostForm("password")
@@ -66,5 +65,9 @@ func main() {
 	r.Run()
 
 	Forum.CreateDB(db)
+
+	r.GET("/index", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", gin.H{})
+	})
 
 }
