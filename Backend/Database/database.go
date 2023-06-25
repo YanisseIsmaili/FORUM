@@ -2,6 +2,7 @@ package Forum
 
 import (
 	"fmt"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -22,6 +23,9 @@ type Posts struct {
 	UserID   uint
 	User     Users
 	Comments []Comments
+	Links	string
+	Date	time.Time
+	// user_picture string
 }
 
 // TABLE COMMENTS
