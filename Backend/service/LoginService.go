@@ -2,6 +2,7 @@ package service
 
 import (
 	database "Forum/Backend/database"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,24 +16,25 @@ type loginInformation struct {
 }
 
 func StaticLoginService(c *gin.Context) LoginService {
-	email := c.PostForm("email")
-	password := c.PostForm("password")
+	email := c.PostForm("Email")
+	password := c.PostForm("Password")
 
+	fmt.Println(email)
 	// Création d'un nouvel utilisateur avec les données récupérées
 	user := database.Users{
 
 		Email:    email,
 		Password: password,
 	}
-
+	fmt.Println(user)
 	return &loginInformation{
-		emailUser:    user.Email,
-		passwordUser: user.Password,
+		emailUser:    email,
+		passwordUser: password,
 	}
-	return nil // Retourner nil si les identifiants sont incorrects
 
 }
 func (info *loginInformation) LoginUser(email string, password string) bool {
 
+	fmt.Println(info.emailUser == email && info.passwordUser == password)
 	return info.emailUser == email && info.passwordUser == password
 }
