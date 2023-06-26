@@ -2,15 +2,26 @@ package main
 
 import (
 	"Forum/Backend/controller"
+	db "Forum/Backend/database"
 	"Forum/Backend/service"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 func main() {
+	dsn := "NerdMythology.db"
+	dbConnector, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal("Erreur de connexion à la base de données:", err)
+	}
+
+	// Création et initialisation de la base de données
+	db.CreateDB(dbConnector)
 
 	r := gin.Default()
 	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
@@ -23,7 +34,7 @@ func main() {
 	})
 
 	r.POST("/login", func(ctx *gin.Context) {
-		loginService := service.StaticLoginService(ctx)
+		loginService := service.StaticLoginService(ctx, dbConnector)
 		var jwtService service.JWTService = service.JWTAuthService()
 		var loginController controller.LoginController = controller.LoginHandler(loginService, jwtService)
 		token := loginController.Login(ctx)
@@ -38,5 +49,4 @@ func main() {
 		}
 	})
 	r.Run(":8089")
-
 }

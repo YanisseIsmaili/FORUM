@@ -1,40 +1,42 @@
 package service
 
 import (
-	database "Forum/Backend/database"
+	data "Forum/Backend/database"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type LoginService interface {
 	LoginUser(email string, password string) bool
 }
+
 type loginInformation struct {
 	emailUser    string
 	passwordUser string
+	db           *gorm.DB
 }
 
-func StaticLoginService(c *gin.Context) LoginService {
+func StaticLoginService(c *gin.Context, db *gorm.DB) LoginService {
 	email := c.PostForm("Email")
 	password := c.PostForm("Password")
 
-	fmt.Println(email)
-	// Création d'un nouvel utilisateur avec les données récupérées
-	user := database.Users{
-
-		Email:    email,
-		Password: password,
-	}
-	fmt.Println(user)
 	return &loginInformation{
 		emailUser:    email,
 		passwordUser: password,
+		db:           db,
+	}
+}
+
+func (info *loginInformation) LoginUser(email string, password string) bool {
+	user := data.Users{}
+
+	if err := info.db.Where("email = ? AND password = ?", email, password).First(&user).Error; err != nil {
+		fmt.Println("User not found")
+		return false
 	}
 
-}
-func (info *loginInformation) LoginUser(email string, password string) bool {
-
-	fmt.Println(info.emailUser == email && info.passwordUser == password)
-	return info.emailUser == email && info.passwordUser == password
+	// Vérification du mot de passe
+	return user.Password == password
 }
