@@ -25,7 +25,7 @@ func main() {
 
 	// Création et initialisation de la base de données
 	db.CreateDB(dbConnector)
-
+	// création route par default
 	r := gin.Default()
 	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
 		log.Printf("endpoint %v %v %v %v\n", httpMethod, absolutePath, handlerName, nuHandlers)
@@ -33,10 +33,12 @@ func main() {
 	r.StaticFile("/styles.css", "./Frontend/styles.css") // permet de link le fichier css
 	r.LoadHTMLGlob("Frontend/*")                         // permet d'allez chercher
 
+	// crée une route /get pour afficher la page
 	r.GET("/login", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "log&Signup.html", gin.H{})
 	})
 
+	// permet de vérifier les informatinos du méthod post
 	r.POST("/login", func(ctx *gin.Context) {
 		loginService := service.StaticLoginService(ctx, dbConnector)
 		var jwtService service.JWTService = service.JWTAuthService()
@@ -68,9 +70,11 @@ func main() {
 
 	r.GET("/index", func(c *gin.Context) {
 		// Code pour gérer l'accès à la page /index lorsque le token est valide
+
+		// Code pour gérer l'accès à la page /index lorsque le token est valide
+
 		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
 
-	
 	r.Run(":8089")
 }
