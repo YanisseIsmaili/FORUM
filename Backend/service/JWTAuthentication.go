@@ -1,4 +1,4 @@
-package Forum
+package service
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-// jwt service
+//jwt service
 type JWTService interface {
 	GenerateToken(email string, isUser bool) string
 	ValidateToken(token string) (*jwt.Token, error)
@@ -24,16 +24,16 @@ type jwtServices struct {
 	issure    string
 }
 
-// auth-jwt
+//auth-jwt
 func JWTAuthService() JWTService {
 	return &jwtServices{
 		secretKey: getSecretKey(),
-		issure:    "Bikash",
+		issure:    "Rohan",
 	}
 }
 
 func getSecretKey() string {
-	secret := os.Getenv("SECRET")
+	secret := os.Getenv("JWT_SECRET")
 	if secret == "" {
 		secret = "secret"
 	}

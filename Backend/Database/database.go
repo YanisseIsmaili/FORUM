@@ -1,4 +1,4 @@
-package Forum
+package Database
 
 import (
 	"fmt"
@@ -23,8 +23,8 @@ type Posts struct {
 	UserID   uint
 	User     Users
 	Comments []Comments
-	Links	string
-	Date	time.Time
+	Links    string
+	Date     time.Time
 	// user_picture string
 }
 

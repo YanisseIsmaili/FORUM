@@ -4,28 +4,18 @@ go 1.20
 
 require (
 	github.com/gin-gonic/gin v1.9.1
-	gorm.io/driver/sqlite v1.5.2
 	gorm.io/gorm v1.25.2-0.20230530020048-26663ab9bf55
-)
-
-require (
-	github.com/fatih/structs v1.1.0 // indirect
-	github.com/gobuffalo/flect v0.3.0 // indirect
-	github.com/gobuffalo/validate/v3 v3.3.3 // indirect
-	github.com/gofrs/uuid v4.2.0+incompatible // indirect
-	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 )
 
 require (
 	github.com/bytedance/sonic v1.9.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.14.1 // indirect
-	github.com/gobuffalo/tags/v3 v3.1.4
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
