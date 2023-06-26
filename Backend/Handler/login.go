@@ -10,6 +10,34 @@ import (
 	"gorm.io/gorm"
 )
 
+type LoginService interface {
+	LoginUser(email string, password string) bool
+}
+
+type loginInformation struct {
+	emailUser    string
+	passwordUser string
+}
+
+func StaticLoginService(c *gin.Context) LoginService {
+	email := c.PostForm("email")
+	password := c.PostForm("password")
+
+	// Création d'un nouvel utilisateur avec les données récupérées
+	user := Database.Users{
+
+		Email:    email,
+		Password: password,
+	}
+	return &loginInformation{
+		emailUser:    user.Email,
+		passwordUser: user.Password,
+	}
+}
+func (info *loginInformation) LoginUser(email string, password string) bool {
+	return info.emailUser == email && info.passwordUser == password
+}
+
 func Register() {
 	// crée la base de donnée :
 	dsn := "NerdMythology.db"
@@ -30,16 +58,16 @@ func Register() {
 	})
 	r.POST("/login", func(c *gin.Context) {
 
-		username := c.PostForm("username")
-		email := c.PostForm("email")
-		password := c.PostForm("password")
+		// username := c.PostForm("username")
+		// email := c.PostForm("email")
+		// password := c.PostForm("password")
 
-		// Création d'un nouvel utilisateur avec les données récupérées
-		user := Database.Users{
-			Username: username,
-			Email:    email,
-			Password: password,
-		}
+		// // Création d'un nouvel utilisateur avec les données récupérées
+		// user := Database.Users{
+		// 	Username: username,
+		// 	Email:    email,
+		// 	Password: password,
+		// }
 
 		// Appel à la fonction createDB() pour créer et initialiser l'utilisateur
 		Database.CreateDB(db)
