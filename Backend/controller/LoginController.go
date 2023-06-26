@@ -27,6 +27,8 @@ func LoginHandler(loginService service.LoginService,
 
 func (controller *loginController) Login(ctx *gin.Context) string {
 	var credential LoCred.LoginCredentials
+	credential.Email = ctx.PostForm("Email")
+	credential.Password = ctx.PostForm("Password")
 	err := ctx.ShouldBind(&credential)
 	if err != nil {
 		return "no data found"
