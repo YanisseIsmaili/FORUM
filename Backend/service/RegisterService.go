@@ -2,7 +2,6 @@ package service
 
 import (
 	Database "Forum/Backend/database"
-	"log"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -21,14 +20,10 @@ func RegisterUser(c *gin.Context, db *gorm.DB) {
 	}
 
 	// Appel à la fonction createDB() pour créer et initialiser l'utilisateur
-	Database.CreateDB(db)
-	error := db.Create(&user).Error
-	if error != nil {
-		log.Fatal("Erreur lors de la création de l'utilisateur:", error)
-	}
+	//Database.CreateDB(db)
+	Database.AddUser(user.Username, user.Email, user.Password, db)
 
 	// Fermeture de la connexion à la base de données
-	
 
 	// Réponse au client
 

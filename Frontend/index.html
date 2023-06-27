@@ -5,9 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nerd_mythology</title>
 
-    <button type="submit">Deconexion</button>
+
 </head>
 <body>
-    
+    <h1>Bienvenue sur la page d'accueil !</h1>
+    <button id="logout-btn">Déconnexion</button>
+
+    <script>
+        document.getElementById("logout-btn").addEventListener("click", function() {
+            // Appel AJAX ou redirection vers l'URL de déconnexion
+            window.location.href = "/logout";
+        });
+
+        cookie.removeItem("token-localhost");
+    </script>
+
 </body>
 </html>
