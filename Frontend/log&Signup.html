@@ -62,25 +62,7 @@
       container.classList.remove("right-panel-active");
       });
    </script>
-   <script>
-      var signUpForm = document.querySelector(".sign-up-container form");
-      signUpForm.addEventListener("submit", function(event) {
-         event.preventDefault();
 
-         var passwordField = document.getElementById("password");
-         var password = passwordField.value;
-
-         // Hacher le mot de passe avec SHA-256
-         var hashedPassword = CryptoJS.SHA256(password).toString();
-
-         // Mettre à jour la valeur du champ de mot de passe avec le mot de passe haché
-         passwordField.value = hashedPassword;
-
-        
-         // Soumettre le formulaire d'inscription
-         signUpForm.submit();
-      });
-   </script>
    <script>
       var password = document.getElementById("password"),
           confirm_password = document.getElementById("confirm_password");
