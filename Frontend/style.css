@@ -1,0 +1,148 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: "Quicksand", sans-serif;
+  display: grid;
+  place-items: center;
+
+  background-image: url(https://img1.wallspic.com/crops/8/3/4/6/2/126438/126438-futurism-illustration-digital_art-stage-capital_city-3840x2160.jpg);
+
+}
+h1{
+	color: #ffffff;
+	font-size: 50px;
+	font-weight: bold;
+	text-align: center;
+	margin-top: 10px;
+	backdrop-filter: blur(16px) saturate(180%);
+	-webkit-backdrop-filter: blur(16px) saturate(180%);
+	background-color: rgba(17, 25, 40, 0.75);
+	border-radius: 52px;
+	border: 1px solid rgba(255, 255, 255, 0.125);
+	padding: 20px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.parent {
+	display: grid;
+	margin: 50px;
+	grid-template-columns: repeat(4, minmax(20rem, 1fr));
+	grid-template-rows: repeat(4, minmax(20rem, 1fr));
+	grid-gap: 110px;
+  }
+  
+  .container {
+	justify-content: center;
+	min-height: 240px;
+  }
+  
+  .card {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	box-shadow: 0 .1rem 1rem rgba(0, 0, 0, 0.1);
+	border-radius: 1em;
+	background: #ECE9E6;
+	background: linear-gradient(to right, #FFFFFF, #ECE9E6);
+  }
+  
+  .contentCommenterShow{
+	  display: flex;
+	  flex-direction: column;
+	  justify-content: space-between;
+	  width: 100%;
+	  height: 100%;
+	  overflow: hidden;
+	  box-shadow: 0 .1rem 1rem rgba(0, 0, 0, 0.1);
+	  border-radius: 1em;
+	  background: #ECE9E6;
+	  background: linear-gradient(to right, #FFFFFF, #ECE9E6);
+  }
+
+  img {
+	max-width: 100%;
+	display: block;
+	object-fit: cover;
+  }
+  
+  .card__body {
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: .5rem;
+  }
+  img {
+	max-width: 100%;
+	display: block;
+	object-fit: cover;
+  }
+  
+  .card__body {
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: .5rem;
+  }
+  
+.tag {
+  align-self: flex-start;
+  padding: .25em .75em;
+  border-radius: 1em;
+  font-size: .75rem;
+}
+
+.tag + .tag {
+  margin-left: .5em;
+}
+
+.tag-blue {
+  background: #56CCF2;
+background: linear-gradient(to bottom, #2F80ED, #56CCF2);
+  color: #fafafa;
+}
+
+.tag-brown {
+  background: #D1913C;
+background: linear-gradient(to bottom, #FFD194, #D1913C);
+  color: #fafafa;
+}
+
+.tag-red {
+  background: #cb2d3e;
+background: linear-gradient(to bottom, #ef473a, #cb2d3e);
+  color: #fafafa;
+}
+
+.card__body h4 {
+  font-size: 1.5rem;
+  text-transform: capitalize;
+}
+
+.card__footer {
+  display: flex;
+  padding: 1rem;
+  margin-top: auto;
+}
+
+.user {
+  display: flex;
+  gap: .5rem;
+}
+
+.user__image {
+  border-radius: 50%;
+}
+
+.user__info > small {
+  color: #666;
+}

@@ -40,7 +40,7 @@ type Comments struct {
 }
 
 func CreateDB(db *gorm.DB) {
-	// Création des tables	
+	// Création des tables
 	db.AutoMigrate(&Users{}, &Posts{}, &Comments{})
 
 }
@@ -74,6 +74,15 @@ func GetPostFromBdd(db *gorm.DB) ([]Posts, error) {
 	}
 
 	fmt.Println(result)
+
+	return posts, nil
+}
+
+func GetAllPosts(db *gorm.DB) ([]Posts, error) {
+	var posts []Posts
+	if err := db.Find(&posts).Error; err != nil {
+		return nil, err
+	}
 
 	return posts, nil
 }

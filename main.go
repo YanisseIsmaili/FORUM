@@ -34,7 +34,8 @@ func main() {
 	}
 
 	r.StaticFile("/styles.css", "./Frontend/styles.css") // permet de lier le fichier CSS
-	r.LoadHTMLGlob("Frontend/*")                         // permet d'aller chercher les modèles HTML
+	r.StaticFile("/style.css", "./Frontend/style.css")
+	r.LoadHTMLGlob("Frontend/*") // permet d'aller chercher les modèles HTML
 	r.POST("/register", func(c *gin.Context) {
 		service.RegisterUser(c, dbConnector)
 		c.HTML(http.StatusOK, "log&Signup.html", gin.H{})
@@ -64,9 +65,6 @@ func main() {
 		}
 	})
 
-	r.GET("/index", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", gin.H{})
-	})
 	// Middleware pour vérifier le token à chaque requête
 	r.Use(func(c *gin.Context) {
 		token, err := c.Cookie("token")
@@ -78,10 +76,35 @@ func main() {
 		}
 		c.Next()
 	})
+	r.GET("/index", func(c *gin.Context) {
+
+		posts, err := database.GetAllPosts(dbConnector)
+		if err != nil {
+			// Gérer l'erreur de récupération des posts
+			fmt.Printf("Erreur de récupération des posts : %s", err)
+			// Par exemple, renvoyer une erreur ou effectuer une autre action appropriée
+		}
+		c.HTML(http.StatusOK, "index.html", gin.H{
+			"posts": posts,
+		})
+	})
 
 	r.GET("/logout", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "log&Signup.html", gin.H{})
 	})
 
+	r.GET("/create-post", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "create-post.html", gin.H{})
+	})
+
+	r.POST("/sendPost", func(c *gin.Context) {
+		service.CreatePost(c, dbConnector)
+		c.Redirect(http.StatusFound, "/index")
+	})
+
+	r.POST("/sendComment", func(c *gin.Context) {
+		service.addComment(c, dbConnector)
+		c.Redirect(http.StatusFound, "/index")
+	})
 	r.Run(":8089")
 }
