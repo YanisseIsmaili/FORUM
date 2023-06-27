@@ -1,7 +1,7 @@
 package service
 
 import (
-	Database "Forum/Backend/database"
+	Database "Forum/Backend/Database"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

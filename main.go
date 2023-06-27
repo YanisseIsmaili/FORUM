@@ -1,10 +1,9 @@
 package main
 
 import (
+	database "Forum/Backend/Database"
+	service "Forum/Backend/Service"
 	"Forum/Backend/controller"
-	db "Forum/Backend/database"
-
-	"Forum/Backend/service"
 	"fmt"
 	"log"
 	"net/http"
@@ -24,7 +23,7 @@ func main() {
 	}
 
 	// Création et initialisation de la base de données
-	db.CreateDB(dbConnector)
+	database.CreateDB(dbConnector)
 	// création route par default
 	r := gin.Default()
 	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
@@ -68,14 +67,6 @@ func main() {
 		c.Next()
 	})
 
-	r.GET("/index", func(c *gin.Context) {
-		// Code pour gérer l'accès à la page /index lorsque le token est valide
-
-		// Code pour gérer l'accès à la page /index lorsque le token est valide
-
-		c.HTML(http.StatusOK, "index.html", gin.H{})
-	})
-
 	r.GET("/logout", func(c *gin.Context) {
 		c.Redirect(http.StatusFound, "/login")
 	})
@@ -85,5 +76,35 @@ func main() {
 
 	})
 
+	r.GET("/createPost", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "Post.html", gin.H{})
+	})
+
+	r.POST("/sendPost", func(c *gin.Context) {
+		token, _ := c.Cookie("token")
+		fmt.Println(token)
+		service.CreatePost(c, dbConnector, token)
+		c.Redirect(http.StatusFound, "/index")
+
+	})
+
+	r.GET("/index", func(c *gin.Context) {
+		// Code pour gérer l'accès à la page /index lorsque le token est valide
+
+		// Code pour gérer l'accès à la page /index lorsque le token est valide
+		posts, err := database.GetPostFromBdd(dbConnector)
+		if err != nil {
+			log.Println("Erreur lors de la récupération des posts:", err)
+			c.HTML(http.StatusInternalServerError, "error.html", nil)
+			return
+		}
+		c.HTML(http.StatusOK, "index.html", gin.H{
+			"Posts": posts, // Passer les posts au modèle HTML
+		})
+
+		
+
+	})
 	r.Run(":8089")
+
 }

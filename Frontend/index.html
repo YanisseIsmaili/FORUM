@@ -12,7 +12,18 @@
 <body>
     <h1>Bienvenue sur la page d'accueil !</h1>
     <button id="logout-btn">Déconnexion</button>
+    <button><a href="createPost">Create a post </a></button>
 
+    {{range .Posts}}
+    <div class="containerPost">
+        {{.Title}}
+        <span>-------------------------</span>
+        {{.Theme}}
+        <div class="containerContent">
+            {{.Content}}
+        </div>
+    </div>
+{{end}}
 
   <script>
     document.getElementById("logout-btn").addEventListener("click", function() {

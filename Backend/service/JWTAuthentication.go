@@ -57,6 +57,7 @@ func (service *jwtServices) GenerateToken(email string, isUser bool) string {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("_______________________________________LE token est avant générate token : ", t)
 	return t
 }
 
@@ -69,4 +70,39 @@ func (service *jwtServices) ValidateToken(encodedToken string) (*jwt.Token, erro
 		return []byte(service.secretKey), nil
 	})
 
+}
+
+func ParseToken(tokenString string) (*jwt.Token, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Vérification de la méthode de signature
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("méthode de signature invalide : %v", token.Header["alg"])
+		}
+
+		// Retournez la clé secrète utilisée pour signer le token
+		return []byte(getSecretKey()), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return token, nil
+}
+
+func GetUsernameFromToken(tokenString string) (string, error) {
+	token, err := ParseToken(tokenString)
+	if err != nil {
+		return "", err
+	}
+
+	// Vérifiez si le token est valide
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// Récupérez le nom d'utilisateur du claim approprié
+		if name, ok := claims["Name"].(string); ok {
+			return name, nil
+		}
+	}
+
+	return "", fmt.Errorf("token invalide")
 }

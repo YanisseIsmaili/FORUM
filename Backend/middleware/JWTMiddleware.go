@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	"Forum/Backend/Service"
 	"fmt"
 	"net/http"
-	"Forum/Backend/service"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"

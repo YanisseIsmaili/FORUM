@@ -2,7 +2,7 @@ package controller
 
 import (
 	"Forum/Backend/LoCred"
-	"Forum/Backend/service"
+	service "Forum/Backend/Service"
 
 	"github.com/gin-gonic/gin"
 )
