@@ -1,7 +1,8 @@
 package service
 
 import (
-	Database "Forum/Backend/Database"
+	database "Forum/Backend/database"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -13,15 +14,18 @@ func RegisterUser(c *gin.Context, db *gorm.DB) {
 	password := c.PostForm("password")
 
 	// Création d'un nouvel utilisateur avec les données récupérées
-	user := Database.Users{
+	user := database.Users{
 		Username: username,
 		Email:    email,
 		Password: password,
 	}
-
+	fmt.Print("_________________________REGISTER_INFO_________________________")
+	fmt.Println(user.Username)
+	fmt.Println(user.Email)
+	fmt.Println(user.Password)
 	// Appel à la fonction createDB() pour créer et initialiser l'utilisateur
 	//Database.CreateDB(db)
-	Database.AddUser(user.Username, user.Email, user.Password, db)
+	database.AddUser(user.Username, user.Email, user.Password, db)
 
 	// Fermeture de la connexion à la base de données
 

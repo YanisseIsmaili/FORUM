@@ -1,7 +1,7 @@
 package service
 
 import (
-	database "Forum/Backend/Database"
+	database "Forum/Backend/database"
 	"fmt"
 
 	"github.com/gin-gonic/gin"

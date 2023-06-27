@@ -1,9 +1,9 @@
 package main
 
 import (
-	database "Forum/Backend/Database"
-	service "Forum/Backend/Service"
-	"Forum/Backend/controller"
+	controller "Forum/Backend/controller"
+	database "Forum/Backend/database"
+	service "Forum/Backend/service"
 	"fmt"
 	"log"
 	"net/http"
@@ -16,7 +16,8 @@ import (
 const IndexURL = "/index"
 
 func main() {
-	dsn := "NerdMythology.db"
+	fmt.Print("Hello World")
+	dsn := "NewNErd.db"
 	dbConnector, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Erreur de connexion à la base de données:", err)
@@ -71,6 +72,7 @@ func main() {
 		c.Redirect(http.StatusFound, "/login")
 	})
 	r.POST("/login/register", func(c *gin.Context) {
+		fmt.Print("_________________________REGISTER_________________________")
 		service.RegisterUser(c, dbConnector)
 		c.Redirect(http.StatusFound, "/login")
 
@@ -101,8 +103,6 @@ func main() {
 		c.HTML(http.StatusOK, "index.html", gin.H{
 			"Posts": posts, // Passer les posts au modèle HTML
 		})
-
-		
 
 	})
 	r.Run(":8089")

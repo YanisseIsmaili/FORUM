@@ -1,7 +1,7 @@
 package service
 
 import (
-	data "Forum/Backend/Database"
+	database "Forum/Backend/database"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -30,7 +30,7 @@ func StaticLoginService(c *gin.Context, db *gorm.DB) LoginService {
 }
 
 func (info *loginInformation) LoginUser(email string, password string) bool {
-	user := data.Users{
+	user := database.Users{
 		Email:    info.emailUser,
 		Password: info.passwordUser,
 	}
