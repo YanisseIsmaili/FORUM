@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	service "Forum/Backend/service"
+	service "Forum/Backend/Service"
 	"fmt"
 	"net/http"
 

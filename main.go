@@ -1,9 +1,9 @@
 package main
 
 import (
-	controller "Forum/Backend/controller"
-	database "Forum/Backend/database"
-	service "Forum/Backend/service"
+	database "Forum/Backend/Database"
+	service "Forum/Backend/Service"
+	"Forum/Backend/controller"
 	"fmt"
 	"log"
 	"net/http"
@@ -16,8 +16,8 @@ import (
 const IndexURL = "/index"
 
 func main() {
-	fmt.Print("Hello World")
-	dsn := "NewNErd.db"
+
+	dsn := "forum.db"
 	dbConnector, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Erreur de connexion à la base de données:", err)
@@ -25,6 +25,7 @@ func main() {
 
 	// Création et initialisation de la base de données
 	database.CreateDB(dbConnector)
+	database.AddUser("John", "john@example.com", "password", dbConnector)
 	// création route par default
 	r := gin.Default()
 	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
