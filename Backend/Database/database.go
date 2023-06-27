@@ -40,8 +40,7 @@ type Comments struct {
 }
 
 func CreateDB(db *gorm.DB) {
-	// Création des tables
-	db.Migrator().DropTable(&Users{}, &Posts{}, &Comments{})
+	// Création des tables	
 	db.AutoMigrate(&Users{}, &Posts{}, &Comments{})
 
 }
@@ -50,7 +49,7 @@ func CreateDB(db *gorm.DB) {
 func AddUser(username string, email string, password string, db *gorm.DB) {
 	// Ajout de l'utilisateur
 	db.Create(&Users{Username: username, Email: email, Password: password})
-	fmt.Print("_________________________ADD_USER_________________________")
+
 }
 
 // Fonction pour ajouter un post

@@ -10,6 +10,7 @@ import (
 )
 
 func RegisterUser(c *gin.Context, db *gorm.DB) {
+	fmt.Print("____________________REGISTER_______________________USER_______________________")
 	username := c.PostForm("username")
 	email := c.PostForm("email")
 	password := c.PostForm("password")
@@ -20,10 +21,7 @@ func RegisterUser(c *gin.Context, db *gorm.DB) {
 		Email:    email,
 		Password: password,
 	}
-	fmt.Print("_________________________REGISTER_INFO_________________________")
-	fmt.Println(user.Username)
-	fmt.Println(user.Email)
-	fmt.Println(user.Password)
+
 	// Appel à la fonction createDB() pour créer et initialiser l'utilisateur
 	//Database.CreateDB(db)
 	database.AddUser(user.Username, user.Email, user.Password, db)
@@ -32,4 +30,8 @@ func RegisterUser(c *gin.Context, db *gorm.DB) {
 
 	// Réponse au client
 
+}
+
+func Test() {
+	fmt.Println("_____________________________________________________test_________________________________________________")
 }

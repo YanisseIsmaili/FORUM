@@ -16,7 +16,7 @@ import (
 const IndexURL = "/index"
 
 func main() {
-
+	service.Test()
 	dsn := "forum.db"
 	dbConnector, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -26,6 +26,7 @@ func main() {
 	// Création et initialisation de la base de données
 	database.CreateDB(dbConnector)
 	database.AddUser("John", "john@example.com", "password", dbConnector)
+
 	// création route par default
 	r := gin.Default()
 	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
@@ -79,18 +80,6 @@ func main() {
 
 	})
 
-	r.GET("/createPost", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "Post.html", gin.H{})
-	})
-
-	r.POST("/sendPost", func(c *gin.Context) {
-		token, _ := c.Cookie("token")
-		fmt.Println(token)
-		service.CreatePost(c, dbConnector, token)
-		c.Redirect(http.StatusFound, "/index")
-
-	})
-
 	r.GET("/index", func(c *gin.Context) {
 		// Code pour gérer l'accès à la page /index lorsque le token est valide
 
@@ -106,6 +95,18 @@ func main() {
 		})
 
 	})
+	r.GET("/createPost", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "Post.html", gin.H{})
+	})
+
+	r.POST("/sendPost", func(c *gin.Context) {
+		token, _ := c.Cookie("token")
+		fmt.Println(token)
+		service.CreatePost(c, dbConnector, token)
+		c.Redirect(http.StatusFound, "/index")
+
+	})
+
 	r.Run(":8089")
 
 }
