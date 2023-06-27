@@ -77,18 +77,21 @@ func main() {
 		c.Next()
 	})
 	r.GET("/index", func(c *gin.Context) {
-
 		posts, err := database.GetAllPosts(dbConnector)
 		if err != nil {
 			// Gérer l'erreur de récupération des posts
 			fmt.Printf("Erreur de récupération des posts : %s", err)
 			// Par exemple, renvoyer une erreur ou effectuer une autre action appropriée
 		}
+		service.ShowPostModal(c, dbConnector) // Appel de la fonction ShowPostModal
 		c.HTML(http.StatusOK, "index.html", gin.H{
 			"posts": posts,
 		})
 	})
 
+	r.GET("/post-modal", func(c *gin.Context) {
+		service.ShowPostModal(c, dbConnector)
+	})
 	r.GET("/logout", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "log&Signup.html", gin.H{})
 	})
@@ -103,8 +106,12 @@ func main() {
 	})
 
 	r.POST("/sendComment", func(c *gin.Context) {
-		service.addComment(c, dbConnector)
+
+		service.SendComment(c, dbConnector)
+
 		c.Redirect(http.StatusFound, "/index")
 	})
+
 	r.Run(":8089")
+
 }

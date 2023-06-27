@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nerd_mythology</title>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="/style.css">
     <style>
         .modal-container {
@@ -46,13 +47,14 @@
                     <span class="tag tag-blue">{{.Theme}}</span>
                     <h4>{{.TitlePost}}</h4>
                     <p>{{.ContentCategory}}</p>
+                    
                 </div>
                 <div class="card__footer">
                     <div class="user">
                         <img src="https://i.pravatar.cc/40?img=1" alt="user__image" class="user__image">
                         <div class="user__info">
                             <h5>rajouterusername</h5>
-                            <button class="comment-btn">Afficher Commentaire</button>
+                            <button class="comment-btn" data-postid="{{.ID}}">Afficher Commentaire</button>
                         </div>
                     </div>
                 </div>
@@ -62,48 +64,69 @@
     </div>
     
     <div class="modal-container">
+        <button class="close-btn">Fermer</button>
         <h3>Commentaires</h3>
         <div class="commentaire"></div>
-        <form action="/index" method="post" name="commentaire">
+        <form action="/sendComment" method="post" name="commentaire">
             <input type="text" placeholder="Add a new Comment" name="comment"/>
+            <input type="hidden" name="postID" value="{{.ID}}"> <!-- Ajoutez cette ligne -->
             <button type="submit">Commenter</button>
-        </form>
-    </div>
+          </form>
 
     <script>
         document.getElementById("logout-btn").addEventListener("click", function() {
-            // Supprimer le cookie
-            Cookies.remove('token');
-            // Redirection vers l'URL de déconnexion
-            window.location.href = "/logout";
+          // Supprimer le cookie
+          Cookies.remove('token');
+          // Redirection vers l'URL de déconnexion
+          window.location.href = "/logout";
         });
-
+      
         var commentBtns = document.getElementsByClassName("comment-btn");
         var modalContainer = document.querySelector(".modal-container");
-
-        for (var i = 0; i < commentBtns.length; i++) {
-            commentBtns[i].addEventListener("click", function() {
-                modalContainer.classList.add("show");
-            });
-        }
-
-        modalContainer.addEventListener("click", function(event) {
-            if (event.target === modalContainer) {
-                modalContainer.classList.remove("show");
+        var commentForm = document.querySelector(".modal-container form[name='commentaire']");
+        var commentaire = document.querySelector(".modal-container .commentaire");
+        var closeBtn = document.querySelector(".modal-container .close-btn");
+      
+        // Gestionnaire d'événements pour afficher le modal et récupérer les commentaires
+        function showComments(postID) {
+          // Effectuer une requête AJAX pour récupérer les commentaires
+          $.ajax({
+            url: "/comments/" + postID, // Remplacez "/comments/" par l'URL réelle de votre route
+            method: "GET",
+            success: function(response) {
+              // Mettre à jour le contenu du modal avec les commentaires récupérés
+              commentaire.innerHTML = response;
+            },
+            error: function(error) {
+              console.log("Erreur lors de la récupération des commentaires :", error);
             }
-        });
+          });
+        }
+      
+        // Gestionnaire d'événements pour afficher le modal
+        function showCommentModal(event) {
+          event.preventDefault();
+          var postID = this.getAttribute("data-postid");
+          showComments(postID);
+          modalContainer.classList.add("show");
+        }
+      
+        // Ajouter le gestionnaire d'événements à tous les boutons "Afficher Commentaire"
+       
+        function closeModal() {
+          modalContainer.classList.remove("show");
+        }
+      
+        // Ajouter le gestionnaire d'événements au bouton de fermeture du modal
+        closeBtn.addEventListener("click", closeModal);
+      
+        // Gestionnaire d'événements pour soumettre un commentaire
+       // Gestionnaire d'événements pour soumettre un commentaire
 
-        var commentForm = document.querySelector(".comment-form");
-        var commentaire = document.querySelector(".commentaire");
 
-        commentForm.addEventListener("submit", function(event) {
-            event.preventDefault();
-            var commentInput = this.querySelector("input[name='comment']");
-            var newComment = document.createElement("p");
-            newComment.textContent = commentInput.value;
-            commentaire.appendChild(newComment);
-            commentInput.value = "";
-        });
-    </script>
+  // Si les validations sont réussies, soumettez le formulaire
+  
+      </script>
+      
 </body>
 </html>
