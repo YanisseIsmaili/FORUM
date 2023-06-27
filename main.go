@@ -75,6 +75,10 @@ func main() {
 
 		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
+
+	r.GET("/logout", func(c *gin.Context) {
+		c.Redirect(http.StatusFound, "/login")
+	})
 	r.POST("/login/register", func(c *gin.Context) {
 		service.RegisterUser(c, dbConnector)
 		c.Redirect(http.StatusFound, "/login")
