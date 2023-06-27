@@ -32,15 +32,23 @@ func main() {
 	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
 		log.Printf("endpoint %v %v %v %v\n", httpMethod, absolutePath, handlerName, nuHandlers)
 	}
-	r.StaticFile("/styles.css", "./Frontend/styles.css") // permet de link le fichier css
-	r.LoadHTMLGlob("Frontend/*")                         // permet d'allez chercher
 
-	// crée une route /get pour afficher la page
-	r.GET("/login", func(c *gin.Context) {
+	r.StaticFile("/styles.css", "./Frontend/styles.css") // permet de lier le fichier CSS
+	r.LoadHTMLGlob("Frontend/*")                         // permet d'aller chercher les modèles HTML
+	r.POST("/register", func(c *gin.Context) {
+		service.RegisterUser(c, dbConnector)
+		c.HTML(http.StatusOK, "log&Signup.html", gin.H{})
+	})
+	r.GET("/authentificationfield", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "log&Signup.html", gin.H{})
 	})
 
-	// permet de vérifier les informatinos du méthod post
+	// crée une route /get pour afficher la page
+	r.GET("/dashboard-login", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "log&Signup.html", gin.H{})
+	})
+
+	// permet de vérifier les informations du méthod POST
 	r.POST("/login", func(ctx *gin.Context) {
 		loginService := service.StaticLoginService(ctx, dbConnector)
 		var jwtService service.JWTService = service.JWTAuthService()
@@ -48,42 +56,32 @@ func main() {
 		token := loginController.Login(ctx)
 		if token != "" {
 			fmt.Println("Token found")
-			ctx.SetCookie("token", token, 3600, "/", "", false, true)
+			ctx.SetCookie("token", token, 3600, "/", "", false, false)
 			ctx.Redirect(http.StatusFound, "/index")
-			return
 		} else {
 			fmt.Println("Token not found")
-			ctx.Redirect(http.StatusFound, "/login")
-			return
+			ctx.Redirect(http.StatusFound, "/dashboard-login")
 		}
 	})
 
-	r.POST("/login/register", func(c *gin.Context) {
-		service.RegisterUser(c, dbConnector)
-		c.Redirect(http.StatusFound, "/login")
+	r.GET("/index", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
-
-	r.GET("/createPost", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "Post.html", gin.H{})
-	})
-
+	// Middleware pour vérifier le token à chaque requête
 	r.Use(func(c *gin.Context) {
 		token, err := c.Cookie("token")
 		if err != nil || token == "" {
 			// Rediriger vers la page de connexion si le token est invalide ou non présent
-			c.Redirect(http.StatusFound, "/login")
+			c.Redirect(http.StatusFound, "/authentificationfield")
 			c.Abort()
 			return
 		}
 		c.Next()
 	})
 
-	r.GET("/index", func(c *gin.Context) {
-		// Code pour gérer l'accès à la page /index lorsque le token est valide
-
-		// Code pour gérer l'accès à la page /index lorsque le token est valide
-
-		c.HTML(http.StatusOK, "index.html", gin.H{})
+	r.GET("/logout", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "log&Signup.html", gin.H{})
 	})
+
 	r.Run(":8089")
 }
