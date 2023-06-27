@@ -46,7 +46,7 @@ func main() {
 		token := loginController.Login(ctx)
 		if token != "" {
 			fmt.Println("Token found")
-			ctx.SetCookie("token", token, 3600, "/", "", false, true)
+			ctx.SetCookie("token", token, 3600, "/", "", false, false)
 			ctx.Redirect(http.StatusFound, "/index")
 			return
 		} else {
