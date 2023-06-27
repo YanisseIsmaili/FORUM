@@ -25,15 +25,15 @@ func CreatePost(c *gin.Context, db *gorm.DB, token string) {
 	Theme := c.PostForm("spec")
 
 	post := database.Posts{
-		Title:   title,
-		Content: content,
-		Theme:   Theme,
+		TitlePost:       title,
+		ContentCategory: content,
+		Theme:           Theme,
 	}
 
 	fmt.Println(username)
 	fmt.Println(post)
 
-	database.AddPost(post.Title, post.Content, post.Theme, db)
+	database.AddPost(post.TitlePost, post.ContentCategory, post.Theme, db)
 }
 
 // username := c.PostForm("username")

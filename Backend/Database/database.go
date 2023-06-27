@@ -18,14 +18,14 @@ type Users struct {
 // TABLE POSTS
 type Posts struct {
 	gorm.Model
-	Title        string
-	Content      string
-	UserID       string
-	User         string
-	Theme        string
-	CommentsUser []Comments `gorm:"foreignkey:PostID"`
-	Links        string
-	Date         time.Time
+	TitlePost       string
+	ContentCategory string
+	UserID          string
+	User            string
+	Theme           string
+	CommentsUser    []Comments `gorm:"foreignkey:PostID"`
+	Links           string
+	Date            time.Time
 	// user_picture string
 }
 
@@ -42,7 +42,7 @@ type Comments struct {
 func CreateDB(db *gorm.DB) {
 	// Création des tables
 	db.AutoMigrate(&Users{}, &Posts{}, &Comments{})
-	
+
 }
 
 // Fonction pour ajouter un utilisateur
@@ -54,7 +54,7 @@ func AddUser(username string, email string, password string, db *gorm.DB) {
 // Fonction pour ajouter un post
 func AddPost(title string, content string, theme string, db *gorm.DB) {
 	// Ajout du post
-	db.Create(&Posts{Title: title, Content: content, Theme: theme, Date: time.Now()})
+	db.Create(&Posts{TitlePost: title, ContentCategory: content, Theme: theme, Date: time.Now()})
 
 }
 
@@ -68,8 +68,8 @@ func GetPostFromBdd(db *gorm.DB) ([]Posts, error) {
 	result := db.Find(&posts)
 
 	for _, post := range posts {
-		fmt.Println("Title:", post.Title)
-		fmt.Println("Content:", post.Content)
+		fmt.Println("Title:", post.TitlePost)
+		fmt.Println("Content:", post.ContentCategory)
 	}
 
 	fmt.Println(result)
