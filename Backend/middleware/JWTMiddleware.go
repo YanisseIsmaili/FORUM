@@ -1,9 +1,10 @@
 package middleware
 
 import (
-	service "Forum/Backend/Service"
 	"fmt"
 	"net/http"
+
+	service "Forum/Backend/Service"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -22,6 +23,5 @@ func AuthorizeJWT() gin.HandlerFunc {
 			fmt.Println(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 		}
-
 	}
 }

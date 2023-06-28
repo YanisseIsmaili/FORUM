@@ -1,60 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nerd_mythology</title>
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="/style.css" rel="stylesheet">
-</head>
-<body>
-    <h1>Nerd_mythology</h1>
-    <button id="logout-btn">Déconnexion</button>
-    <button><a href="create-post">Create a post</a></button>
-
-    {{range .posts}}
-    <div class="main">
-        <ul class="cards">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Nerd_mythology</title>
+      <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <link href="/style.css" rel="stylesheet">
+   </head>
+   <body>
+      <h1>Nerd_mythology</h1>
+      <button id="logout-btn">Déconnexion</button>
+      <button><a href="create-post">Create a post</a></button>
+      {{range .posts}}
+      <div class="main">
+         <ul class="cards">
             <li class="cards_item">
-                <div class="card">
-                    <div class="card_image">
-                        <img src="https://c4.wallpaperflare.com/wallpaper/277/354/502/feelsbadman-pepe-meme-memes-wallpaper-preview.jpg" alt="mixed vegetable salad in a mason jar." />
-                        <p class="Theme">{{.Theme}}</p>
-                    </div>
-                    <div class="card_content">
-                        <h1>{{.TitlePost}}</h1>
-                        <div class="card_text">
-                            <p class="ContentCateg"> {{.ContentCategory}}</p>
-                            <hr />
-                            <h3 id="ContentCom">Commentaires</h3>
-
-                            {{range .CommentsUser}}
-                            
-                                <p> Anonyme : {{.Content}} </p>
-                            {{end}}
-
-                            <div class="commentaire" id="comment-container"></div>
-                            <form action="/comments" method="POST" name="commentaire" id="comment-form">
-                                <input type="text" placeholder="Add a new Comment" name="content">
-                                <input type="hidden" name="PostsID" value="{{.PostsID}}">
-                                <button type="submit">Commenter</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+               <div class="card">
+                  <div class="card_image">
+                     <img src="https://c4.wallpaperflare.com/wallpaper/277/354/502/feelsbadman-pepe-meme-memes-wallpaper-preview.jpg" alt="mixed vegetable salad in a mason jar." />
+                     <p class="Theme">{{.Theme}}</p>
+                  </div>
+                  <div class="card_content">
+                     <h1>{{.TitlePost}}</h1>
+                     <div class="card_text">
+                        <p class="ContentCateg"> {{.ContentCategory}}</p>
+                        <hr />
+                        <h3 id="ContentCom">Commentaires</h3>
+                        {{range .CommentsUser}}
+                        <p> Anonyme : {{.Content}} </p>
+                        {{end}}
+                        <div class="commentaire" id="comment-container"></div>
+                        <form action="/comments" method="POST" name="commentaire" id="comment-form">
+                           <input type="text" placeholder="Add a new Comment" name="content">
+                           <input type="hidden" name="PostsID" value="{{.PostsID}}">
+                           <button type="submit">Commenter</button>
+                        </form>
+                     </div>
+                  </div>
+               </div>
             </li>
-        </ul>
-    </div>
-    {{end}}
-
-    <script>
-        document.getElementById("logout-btn").addEventListener("click", function() {
-            // Supprimer le cookie
-            Cookies.remove('token');
-            // Redirection vers l'URL de déconnexion
-            window.location.href = "/logout";
-        });
-    </script>
-</body>
+         </ul>
+      </div>
+      {{end}}
+      <script>
+         document.getElementById("logout-btn").addEventListener("click", function() {
+             // Supprimer le cookie
+             Cookies.remove('token');
+             // Redirection vers l'URL de déconnexion
+             window.location.href = "/logout";
+         });
+      </script>
+   </body>
 </html>

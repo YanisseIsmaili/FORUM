@@ -25,6 +25,7 @@ func main() {
 	}
 
 	// Création et initialisation de la base de données
+
 	database.CreateDB(dbConnector)
 
 	// création route par default
@@ -104,7 +105,6 @@ func main() {
 		fmt.Println(token)
 		service.CreatePost(c, dbConnector)
 		c.Redirect(http.StatusFound, "/index")
-
 	})
 
 	r.POST("/comments", func(c *gin.Context) {

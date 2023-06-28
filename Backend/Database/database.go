@@ -44,16 +44,14 @@ type Comments struct {
 
 func CreateDB(db *gorm.DB) {
 	// Création des tables
-
+	
 	db.AutoMigrate(&Users{}, &Posts{}, &Comments{})
-
 }
 
 // Fonction pour ajouter un utilisateur
 func AddUser(username string, email string, password string, db *gorm.DB) {
 	// Ajout de l'utilisateur
 	db.Create(&Users{Username: username, Email: email, Password: password})
-
 }
 
 // Fonction pour ajouter un post
@@ -78,6 +76,7 @@ func AddComment(content string, userID string, postID string, db *gorm.DB) {
 	// Ajout du commentaire
 	db.Create(&Comments{Content: content, UserID: userID, PostID: postID})
 }
+
 func GetPostFromBdd(db *gorm.DB) ([]Posts, error) {
 	var posts []Posts
 	result := db.Find(&posts)
@@ -108,6 +107,7 @@ func GetAllPosts(db *gorm.DB) ([]Posts, error) {
 	}
 	return posts, nil
 }
+
 func GetCommentsByPostID(postID string, db *gorm.DB) ([]Comments, error) {
 	var comments []Comments
 	if err := db.Where("post_id = ?", postID).Find(&comments).Error; err != nil {

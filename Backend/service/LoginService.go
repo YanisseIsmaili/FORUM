@@ -1,8 +1,9 @@
 package service
 
 import (
-	database "Forum/Backend/Database"
 	"fmt"
+
+	database "Forum/Backend/Database"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -42,5 +43,4 @@ func (info *loginInformation) LoginUser(email string, password string) bool {
 
 	// Vérification du mot de passe
 	return info.emailUser == email && info.passwordUser == password
-
 }

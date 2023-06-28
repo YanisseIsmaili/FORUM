@@ -52,12 +52,12 @@ func (service *jwtServices) GenerateToken(email string, isUser bool) string {
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	//encoded string
+	// encoded string
 	t, err := token.SignedString([]byte(service.secretKey))
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("_______________________________________LE token est avant générate token : ", t)
+
 	return t
 }
 
@@ -65,11 +65,9 @@ func (service *jwtServices) ValidateToken(encodedToken string) (*jwt.Token, erro
 	return jwt.Parse(encodedToken, func(token *jwt.Token) (interface{}, error) {
 		if _, isvalid := token.Method.(*jwt.SigningMethodHMAC); !isvalid {
 			return nil, fmt.Errorf("invalid token shit")
-
 		}
 		return []byte(service.secretKey), nil
 	})
-
 }
 
 func ParseToken(tokenString string) (*jwt.Token, error) {
@@ -82,7 +80,6 @@ func ParseToken(tokenString string) (*jwt.Token, error) {
 		// Retournez la clé secrète utilisée pour signer le token
 		return []byte(getSecretKey()), nil
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -90,6 +87,7 @@ func ParseToken(tokenString string) (*jwt.Token, error) {
 	return token, nil
 }
 
+// ne marche pas mais a été un essaie pour récup username
 func GetUsernameFromToken(tokenString string) (string, error) {
 	token, err := ParseToken(tokenString)
 	if err != nil {

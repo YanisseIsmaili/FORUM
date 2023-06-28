@@ -36,6 +36,9 @@ cd FORUM
 go run .
 
 ```
+
+Puis allez sur le site : http://localhost:8089/authentificationfield
+Nous vous invitons a crée un compte, Ajouté votre premier Post et commenter ceux des autres
 ## 🚀 A PROPOS DE NOUS
 Nous trois dévellopeur débutant dans la programation.
 
