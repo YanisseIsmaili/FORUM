@@ -23,14 +23,10 @@ func RegisterUser(c *gin.Context, db *gorm.DB) {
 	}
 
 	// Appel à la fonction createDB() pour créer et initialiser l'utilisateur
-	// Database.CreateDB(db)
+	
 	database.AddUser(user.Username, user.Email, user.Password, db)
 
-	// Fermeture de la connexion à la base de données
-
-	// Réponse au client
+	
 }
 
-func Test() {
-	fmt.Println("_____________________________________________________test_________________________________________________")
-}
+
