@@ -17,7 +17,6 @@ import (
 const IndexURL = "/index" // URL de la page d'accueil (utilise pour vérifier le token)
 
 func main() {
-	service.Test()
 	dsn := "forum.db"
 	dbConnector, err := gorm.Open(sqlite.Open(dsn), &gorm.Config{})
 	if err != nil {
