@@ -38,7 +38,7 @@ type Comments struct {
 	Content string
 	UserID  string
 	User    Users
-	PostID  string 
+	PostID  string
 	Post    Posts
 }
 
@@ -98,13 +98,21 @@ func GetAllPosts(db *gorm.DB) ([]Posts, error) {
 		return nil, err
 	}
 
+	for i := range posts {
+		post := &posts[i]
+		comments, err := GetCommentsByPostID(post.PostsID, db)
+		if err != nil {
+			return nil, err
+		}
+		post.CommentsUser = comments
+	}
 	return posts, nil
 }
-func GetPostByID(postID string, db *gorm.DB) (*Posts, error) {
-	var post Posts
-	if err := db.Where("posts_id = ?", postID).Preload("CommentsUser").First(&post).Error; err != nil {
+func GetCommentsByPostID(postID string, db *gorm.DB) ([]Comments, error) {
+	var comments []Comments
+	if err := db.Where("post_id = ?", postID).Find(&comments).Error; err != nil {
 		return nil, err
 	}
 
-	return &post, nil
+	return comments, nil
 }

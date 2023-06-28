@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
 	database "Forum/Backend/Database"
 	service "Forum/Backend/Service"
@@ -15,7 +14,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const IndexURL = "/index" // test
+const IndexURL = "/index" // URL de la page d'accueil (utilise pour vérifier le token)
 
 func main() {
 	service.Test()
@@ -78,53 +77,17 @@ func main() {
 		c.Next()
 	})
 	r.GET("/index", func(c *gin.Context) {
+		// Récupérer tous les posts avec leurs commentaires associés
 		posts, err := database.GetAllPosts(dbConnector)
 		if err != nil {
-			// Gérer l'erreur de récupération des posts
-			fmt.Printf("Erreur de récupération des posts : %s", err)
-			// Par exemple, renvoyer une erreur ou effectuer une autre action appropriée
+			log.Println("Erreur lors de la récupération des posts:", err)
+			c.AbortWithStatus(http.StatusInternalServerError)
+			return
 		}
 
-		// Récupérer les commentaires pour chaque post
-		for i, post := range posts {
-			commentPostID := strconv.FormatUint(uint64(post.ID), 10) // Convertir post.ID en string
-			comments, err := service.GetCommentsByPostID(commentPostID, dbConnector)
-			if err != nil {
-				// Gérer l'erreur de récupération des commentaires
-				fmt.Printf("Erreur de récupération des commentaires : %s", err)
-				// Par exemple, renvoyer une erreur ou effectuer une autre action appropriée
-			}
-			// Ajouter les commentaires au post correspondant
-			posts[i].CommentsUser = comments
-		}
-
-		service.ShowPostModal(c, dbConnector) // Appel de la fonction ShowPostModal
+		// Afficher les posts et leurs commentaires dans la table
 		c.HTML(http.StatusOK, "index.html", gin.H{
 			"posts": posts,
-		})
-	})
-
-	r.GET("/post-modal", func(c *gin.Context) {
-		postID := c.Query("postID") // Récupérer la valeur de postID depuis les paramètres de requête
-		service.ShowPostModal(c, dbConnector)
-		c.HTML(http.StatusOK, "post-modal.html", gin.H{
-			"postID": postID,
-		})
-
-	})
-
-	r.GET("/comments/:postID", func(c *gin.Context) {
-		postIDStr := c.Param("postID")
-
-		comments, err := service.GetCommentsByPostID(postIDStr, dbConnector)
-		if err != nil {
-			// Gérer l'erreur de récupération des commentaires
-			fmt.Printf("Erreur de récupération des commentaires : %s", err)
-			// Par exemple, renvoyer une erreur ou effectuer une autre action appropriée
-		}
-
-		c.HTML(http.StatusOK, "comments.html", gin.H{
-			"comments": comments,
 		})
 	})
 
@@ -146,13 +109,21 @@ func main() {
 
 	r.POST("/comments", func(c *gin.Context) {
 		postID := c.PostForm("PostsID")
-		comment := c.PostForm("comment")
-		username := "Anonyme"
+		usermane := "Anonyme"
+		Content := c.PostForm("content")
+		comment := database.Comments{
+			Content: Content,
+			UserID:  usermane,
+			PostID:  postID,
+		}
 
+		fmt.Println("Commentaire :", Content)
+		fmt.Println("PostID :", postID)
 		// Appeler la fonction pour ajouter le commentaire dans la base de données
-		database.AddComment(comment, username, postID, dbConnector)
-		// Rediriger vers la page d'accueil après l'ajout du commentaire
+		database.AddComment(comment.Content, comment.UserID, comment.PostID, dbConnector)
 		c.Redirect(http.StatusFound, "/index")
+		// Rediriger vers la page d'accueil après l'ajout du commentaire
+
 	})
 
 	r.Run(":8089")
