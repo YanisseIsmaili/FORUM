@@ -6,9 +6,11 @@
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  list-style: none;
 }
 
 body {
+	list-style: none;
   font-family: "Quicksand", sans-serif;
   display: grid;
   place-items: center;
@@ -41,8 +43,18 @@ h1{
   .container {
 	justify-content: center;
 	min-height: 240px;
+	
   }
   
+  .Theme{
+	text-align: center;
+	list-style: none;
+	font-size: 30px;
+	margin: 25px;
+  }
+	.cards{
+		margin: 100px;
+	}
   .card {
 	display: flex;
 	flex-direction: column;
@@ -145,4 +157,14 @@ background: linear-gradient(to bottom, #ef473a, #cb2d3e);
 
 .user__info > small {
   color: #666;
+}
+
+.ContentCateg{
+	color: rebeccapurple;
+	margin: 30px;
+	font-size: 20px;
+	padding: 24px;
+	min-height: 50px;
+	text-align: center;
+	border: black 1px solid ;
 }

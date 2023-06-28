@@ -20,19 +20,20 @@
                 <div class="card">
                     <div class="card_image">
                         <img src="https://c4.wallpaperflare.com/wallpaper/277/354/502/feelsbadman-pepe-meme-memes-wallpaper-preview.jpg" alt="mixed vegetable salad in a mason jar." />
-                        <span class="card_price"><span></span>{{.Theme}}</span>
+                        <p class="Theme">{{.Theme}}</p>
                     </div>
                     <div class="card_content">
                         <h1>{{.TitlePost}}</h1>
                         <div class="card_text">
-                            <p>{{.ContentCategory}}</p>
+                            <p class="ContentCateg"> {{.ContentCategory}}</p>
                             <hr />
-                            <h3>Commentaires</h3>
+                            <h3 id="ContentCom">Commentaires</h3>
+
                             {{range .CommentsUser}}
-                            <p>TEST COMMENTAIRE</p>
-                                <p>{{.Content}}</p>
+                            
+                                <p> Anonyme : {{.Content}} </p>
                             {{end}}
-                            <p>TEST COMMENTAIRE</p>
+
                             <div class="commentaire" id="comment-container"></div>
                             <form action="/comments" method="POST" name="commentaire" id="comment-form">
                                 <input type="text" placeholder="Add a new Comment" name="content">

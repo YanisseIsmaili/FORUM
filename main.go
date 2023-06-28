@@ -109,21 +109,23 @@ func main() {
 
 	r.POST("/comments", func(c *gin.Context) {
 		postID := c.PostForm("PostsID")
-		usermane := "Anonyme"
-		Content := c.PostForm("content")
+		username := "Anonyme"
+		content := c.PostForm("content")
+
 		comment := database.Comments{
-			Content: Content,
-			UserID:  usermane,
+			Content: content,
+			UserID:  username,
 			PostID:  postID,
 		}
 
-		fmt.Println("Commentaire :", Content)
+		fmt.Println("Commentaire :", content)
 		fmt.Println("PostID :", postID)
+
 		// Appeler la fonction pour ajouter le commentaire dans la base de données
 		database.AddComment(comment.Content, comment.UserID, comment.PostID, dbConnector)
+
 		c.Redirect(http.StatusFound, "/index")
 		// Rediriger vers la page d'accueil après l'ajout du commentaire
-
 	})
 
 	r.Run(":8089")
