@@ -26,6 +26,7 @@ type Posts struct {
 	CommentsUser    []Comments `gorm:"foreignkey:PostID"`
 	Links           string
 	Date            time.Time
+	PostsID         string
 	// user_picture string
 }
 
@@ -35,12 +36,13 @@ type Comments struct {
 	Content string
 	UserID  string
 	User    Users
-	PostID  uint
+	PostID  string
 	Post    Posts
 }
 
 func CreateDB(db *gorm.DB) {
 	// Création des tables
+	db.Migrator().DropTable( &Posts{})
 	db.AutoMigrate(&Users{}, &Posts{}, &Comments{})
 
 }
@@ -53,14 +55,15 @@ func AddUser(username string, email string, password string, db *gorm.DB) {
 }
 
 // Fonction pour ajouter un post
-func AddPost(title string, content string, theme string, db *gorm.DB) {
+func AddPost(title string, content string, theme string, postId string, db *gorm.DB) {
 	// Ajout du post
-	db.Create(&Posts{TitlePost: title, ContentCategory: content, Theme: theme, Date: time.Now()})
+
+	db.Create(&Posts{TitlePost: title, ContentCategory: content, Theme: theme, PostsID: postId, Date: time.Now()})
 
 }
 
 // Fonction pour ajouter un commentaire
-func AddComment(content string, userID string, postID uint, db *gorm.DB) {
+func AddComment(content string, userID string, postID string, db *gorm.DB) {
 	// Ajout du commentaire
 	db.Create(&Comments{Content: content, UserID: userID, PostID: postID})
 }

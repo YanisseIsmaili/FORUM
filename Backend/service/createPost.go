@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -24,15 +25,20 @@ func CreatePost(c *gin.Context, db *gorm.DB) { //token string, db *gorm.DB) { po
 	title := c.PostForm("postUserTitle")
 	content := c.PostForm("postUserContent")
 	Theme := c.PostForm("spec")
+	postId := uuid.New().String()
 
 	post := database.Posts{
 		TitlePost:       title,
 		ContentCategory: content,
 		Theme:           Theme,
+		PostsID:         postId,
 	}
 
+	// Utiliser postId dans votre logique ou pour l'affecter à une autre variable si nécessaire
+	fmt.Println("postId:", postId)
 	//fmt.Println(username)
 	fmt.Println(post)
 
-	database.AddPost(post.TitlePost, post.ContentCategory, post.Theme, db)
+	database.AddPost(post.TitlePost, post.ContentCategory, post.Theme, postId, db)
+
 }

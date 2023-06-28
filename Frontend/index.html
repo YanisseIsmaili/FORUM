@@ -38,23 +38,23 @@
     <button><a href="create-post">Create a post</a></button>
     <div class="parent">
         {{range .posts}}
+        
         <div class="container">
             <div class="card">
                 <div class="card__header">
                     <img src="https://source.unsplash.com/600x400/?computer" alt="card__image" class="card__image" width="600">
                 </div>
                 <div class="card__body">
-                    <span class="tag tag-blue">{{.Theme}}</span>
+                    <span class="tag tag-blue">{{.Theme}} </span>
                     <h4>{{.TitlePost}}</h4>
                     <p>{{.ContentCategory}}</p>
                     
                 </div>
                 <div class="card__footer">
                     <div class="user">
-                        <img src="https://i.pravatar.cc/40?img=1" alt="user__image" class="user__image">
                         <div class="user__info">
                             <h5>rajouterusername</h5>
-                            <button class="comment-btn" data-postid="{{.ID}}">Afficher Commentaire</button>
+                            <button class="comment-btn" data-postid="{{.PostsID}}">Afficher Commentaire</button>
                         </div>
                     </div>
                 </div>
@@ -66,67 +66,96 @@
     <div class="modal-container">
         <button class="close-btn">Fermer</button>
         <h3>Commentaires</h3>
-        <div class="commentaire"></div>
-        <form action="/sendComment" method="post" name="commentaire">
-            <input type="text" placeholder="Add a new Comment" name="comment"/>
-            <input type="hidden" name="postID" value="{{.ID}}"> <!-- Ajoutez cette ligne -->
+        <div class="commentaire" id="comment-container"></div>
+        <form action="/comments" method="POST" name="commentaire" id="comment-form">
+            <input type="text" placeholder="Add a new Comment" name="comment">
+            <input type="hidden" name="postID" value="{{.PostsID}}">
             <button type="submit">Commenter</button>
-          </form>
+        </form>
+        <script>
+            document.getElementById("logout-btn").addEventListener("click", function() {
+                // Supprimer le cookie
+                Cookies.remove('token');
+                // Redirection vers l'URL de déconnexion
+                window.location.href = "/logout";
+            });
 
-    <script>
-        document.getElementById("logout-btn").addEventListener("click", function() {
-          // Supprimer le cookie
-          Cookies.remove('token');
-          // Redirection vers l'URL de déconnexion
-          window.location.href = "/logout";
-        });
-      
-        var commentBtns = document.getElementsByClassName("comment-btn");
-        var modalContainer = document.querySelector(".modal-container");
-        var commentForm = document.querySelector(".modal-container form[name='commentaire']");
-        var commentaire = document.querySelector(".modal-container .commentaire");
-        var closeBtn = document.querySelector(".modal-container .close-btn");
-      
-        // Gestionnaire d'événements pour afficher le modal et récupérer les commentaires
-        function showComments(postID) {
-          // Effectuer une requête AJAX pour récupérer les commentaires
-          $.ajax({
-            url: "/comments/" + postID, // Remplacez "/comments/" par l'URL réelle de votre route
-            method: "GET",
-            success: function(response) {
-              // Mettre à jour le contenu du modal avec les commentaires récupérés
-              commentaire.innerHTML = response;
-            },
-            error: function(error) {
-              console.log("Erreur lors de la récupération des commentaires :", error);
+            var commentBtns = document.getElementsByClassName("comment-btn");
+            var modalContainer = document.querySelector(".modal-container");
+            var commentForm = document.querySelector(".modal-container form[name='commentaire']");
+            var commentaire = document.querySelector(".modal-container .commentaire");
+            var closeBtn = document.querySelector(".modal-container .close-btn");
+
+            // Gestionnaire d'événements pour afficher le modal et récupérer les commentaires
+            function showComments(postID) {
+                // Effectuer une requête AJAX pour récupérer les commentaires
+                $.ajax({
+                    url: "/comments/" + postID, // Remplacez "/comments/" par l'URL réelle de votre route
+                    method: "GET",
+                    success: function(response) {
+                        // Mettre à jour le contenu du modal avec les commentaires récupérés
+                        commentaire.innerHTML = response;
+                    },
+                    error: function(error) {
+                        console.log("Erreur lors de la récupération des commentaires :", error);
+                    }
+                });
             }
-          });
-        }
-      
-        // Gestionnaire d'événements pour afficher le modal
-        function showCommentModal(event) {
-          event.preventDefault();
-          var postID = this.getAttribute("data-postid");
-          showComments(postID);
-          modalContainer.classList.add("show");
-        }
-      
-        // Ajouter le gestionnaire d'événements à tous les boutons "Afficher Commentaire"
-       
-        function closeModal() {
-          modalContainer.classList.remove("show");
-        }
-      
-        // Ajouter le gestionnaire d'événements au bouton de fermeture du modal
-        closeBtn.addEventListener("click", closeModal);
-      
-        // Gestionnaire d'événements pour soumettre un commentaire
-       // Gestionnaire d'événements pour soumettre un commentaire
 
+            // Gestionnaire d'événements pour afficher le modal
+            function showCommentModal(event) {
+                event.preventDefault();
+                var postID = this.getAttribute("data-postid");
+                showComments(postID);
+                modalContainer.classList.add("show");
+            }
 
-  // Si les validations sont réussies, soumettez le formulaire
-  
-      </script>
-      
+            // Ajouter le gestionnaire d'événements à tous les boutons "Afficher Commentaire"
+            for (var i = 0; i < commentBtns.length; i++) {
+                commentBtns[i].addEventListener("click", showCommentModal);
+            }
+
+            function closeModal() {
+                modalContainer.classList.remove("show");
+            }
+
+            // Ajouter le gestionnaire d'événements au bouton de fermeture du modal
+            closeBtn.addEventListener("click", closeModal);
+        </script>
+        <script>
+            // Supposons que vous ayez un formulaire de commentaire avec l'ID "comment-form"
+            document.getElementById("comment-form").addEventListener("submit", function(event) {
+                event.preventDefault(); // Empêche le comportement par défaut du formulaire
+
+                // Récupère les données du formulaire
+                var commentContent = document.querySelector("#comment-form input[name='comment']").value;
+                var postID = document.querySelector("#comment-form input[name='postID']").value;
+
+                // Crée un objet contenant les données du commentaire
+                var commentData = {
+                    comment: commentContent,
+                    postID: postID
+                };
+
+                // Envoie la requête POST vers la route de commentaires avec les données au format JSON
+                $.ajax({
+                    url: "/comments",
+                    type: "POST",
+                    dataType: "json",
+                    data: JSON.stringify(commentData),
+                    contentType: "application/json",
+                    success: function(response) {
+                        // Traite la réponse de la route de commentaires
+                        // Par exemple, met à jour l'affichage des commentaires
+                        var commentContainer = document.getElementById("comment-container");
+                        // Mettez à jour commentContainer avec la nouvelle réponse de commentaire
+                    },
+                    error: function(error) {
+                        // Gère les erreurs de la requête
+                    }
+                });
+            });
+        </script>
+    </div>
 </body>
 </html>
