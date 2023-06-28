@@ -45,6 +45,7 @@ type Comments struct {
 func CreateDB(db *gorm.DB) {
 	// Création des tables
 	
+
 	db.AutoMigrate(&Users{}, &Posts{}, &Comments{})
 }
 
