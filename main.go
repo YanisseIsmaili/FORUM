@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -88,7 +87,8 @@ func main() {
 
 		// Récupérer les commentaires pour chaque post
 		for i, post := range posts {
-			comments, err := service.GetCommentsByPostID(post.ID, dbConnector)
+			commentPostID := strconv.FormatUint(uint64(post.ID), 10) // Convertir post.ID en string
+			comments, err := service.GetCommentsByPostID(commentPostID, dbConnector)
 			if err != nil {
 				// Gérer l'erreur de récupération des commentaires
 				fmt.Printf("Erreur de récupération des commentaires : %s", err)
@@ -115,15 +115,8 @@ func main() {
 
 	r.GET("/comments/:postID", func(c *gin.Context) {
 		postIDStr := c.Param("postID")
-		postID, err := strconv.ParseUint(postIDStr, 10, 64)
-		if err != nil {
-			// Gérer l'erreur de conversion de l'ID du post
-			fmt.Printf("Erreur de conversion de l'ID du post : %s", err)
-			// Par exemple, renvoyer une erreur ou effectuer une autre action appropriée
-			return
-		}
 
-		comments, err := service.GetCommentsByPostID(uint(postID), dbConnector)
+		comments, err := service.GetCommentsByPostID(postIDStr, dbConnector)
 		if err != nil {
 			// Gérer l'erreur de récupération des commentaires
 			fmt.Printf("Erreur de récupération des commentaires : %s", err)
@@ -143,44 +136,24 @@ func main() {
 		c.HTML(http.StatusOK, "create-post.html", gin.H{})
 	})
 
-	r.POST("/comments", func(c *gin.Context) {
-		// Lire le corps de la requête
-		body, err := ioutil.ReadAll(c.Request.Body)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur de lecture du corps de la requête"})
-			return
-		}
+	r.POST("/sendPost", func(c *gin.Context) {
+		token, _ := c.Cookie("token")
+		fmt.Println(token)
+		service.CreatePost(c, dbConnector)
+		c.Redirect(http.StatusFound, "/index")
 
-		// Afficher le contenu du corps de la requête
-		c.JSON(http.StatusOK, gin.H{"content": string(body)})
 	})
 
-	// r.POST("/sendComment", func(c *gin.Context) {
-	// 	// Récupérer les données du formulaire
-	// 	comment := c.PostForm("comment")
-	// 	postIDStr := c.PostForm("postID")
+	r.POST("/comments", func(c *gin.Context) {
+		postID := c.PostForm("PostsID")
+		comment := c.PostForm("comment")
+		username := "Anonyme"
 
-	// 	// Convertir postIDStr en uint
-	// 	postID, err := strconv.ParseUint(postIDStr, 10, 64)
-	// 	if err != nil {
-	// 		// Gérer l'erreur de conversion
-	// 		// Par exemple, renvoyer une réponse d'erreur
-	// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid postID"})
-	// 		return
-	// 	}
+		// Appeler la fonction pour ajouter le commentaire dans la base de données
+		database.AddComment(comment, username, postID, dbConnector)
+		// Rediriger vers la page d'accueil après l'ajout du commentaire
+		c.Redirect(http.StatusFound, "/index")
+	})
 
-	// 	// Appeler la fonction SendComment du service avec les valeurs appropriées
-	// 	err = service.SendComment(uint(postID), comment, dbConnector)
-	// 	if err != nil {
-	// 		// Gérer l'erreur de l'envoi du commentaire
-	// 		// Par exemple, renvoyer une réponse d'erreur
-	// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send comment"})
-	// 		return
-	// 	}
-
-	// 	// Répondre avec une réponse réussie
-	// 	c.JSON(http.StatusOK, gin.H{"message": "Comment sent successfully"})
-	// })
 	r.Run(":8089")
-
 }

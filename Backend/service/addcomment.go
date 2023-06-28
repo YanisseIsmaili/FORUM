@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"strconv"
 
 	database "Forum/Backend/Database"
 
@@ -10,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetCommentsByPostID(postID uint, db *gorm.DB) ([]database.Comments, error) {
+func GetCommentsByPostID(postID string, db *gorm.DB) ([]database.Comments, error) {
 	var comments []database.Comments
 	result := db.Where("post_id = ?", postID).Find(&comments)
 	if result.Error != nil {
@@ -18,17 +17,11 @@ func GetCommentsByPostID(postID uint, db *gorm.DB) ([]database.Comments, error) 
 	}
 	return comments, nil
 }
-
 func ShowPostModal(c *gin.Context, db *gorm.DB) {
-	postIDStr := c.Query("postID")
-	postID, err := strconv.ParseUint(postIDStr, 10, 64)
-	if err != nil {
-		// Gérer l'erreur de conversion de l'ID du post
-		// ...
-		return
-	}
+	postID := c.Query("postID")
+	postIDStr := postID
 
-	comments, err := GetCommentsByPostID(uint(postID), db)
+	comments, err := GetCommentsByPostID(postIDStr, db)
 	if err != nil {
 		// Gérer l'erreur de récupération des commentaires
 		// ...
@@ -38,18 +31,4 @@ func ShowPostModal(c *gin.Context, db *gorm.DB) {
 	for _, comment := range comments {
 		fmt.Println("Comment:", comment.Content)
 	}
-}
-func SendComment(postID string, comment string, dbConnector *gorm.DB) error {
-	// Créez une instance du modèle Comment avec les données du commentaire
-	newComment := database.Comments{
-		PostID:  postID,
-		Content: comment,
-	}
-
-	// Insérez le commentaire dans la base de données en utilisant GORM
-	if err := dbConnector.Create(&newComment).Error; err != nil {
-		return err
-	}
-
-	return nil
 }

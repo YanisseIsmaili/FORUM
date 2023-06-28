@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -26,7 +27,8 @@ type Posts struct {
 	CommentsUser    []Comments `gorm:"foreignkey:PostID"`
 	Links           string
 	Date            time.Time
-	PostsID         string
+	PostsID         string `gorm:"column:PostsID"`
+
 	// user_picture string
 }
 
@@ -36,13 +38,13 @@ type Comments struct {
 	Content string
 	UserID  string
 	User    Users
-	PostID  string
+	PostID  string 
 	Post    Posts
 }
 
 func CreateDB(db *gorm.DB) {
 	// Création des tables
-	db.Migrator().DropTable( &Posts{})
+
 	db.AutoMigrate(&Users{}, &Posts{}, &Comments{})
 
 }
@@ -55,11 +57,20 @@ func AddUser(username string, email string, password string, db *gorm.DB) {
 }
 
 // Fonction pour ajouter un post
-func AddPost(title string, content string, theme string, postId string, db *gorm.DB) {
+func AddPost(title string, content string, theme string, db *gorm.DB) {
+	// Générer un identifiant unique pour le post
+	postID := uuid.NewString()
+
 	// Ajout du post
+	post := &Posts{
+		TitlePost:       title,
+		ContentCategory: content,
+		Theme:           theme,
+		PostsID:         postID,
+		Date:            time.Now(),
+	}
 
-	db.Create(&Posts{TitlePost: title, ContentCategory: content, Theme: theme, PostsID: postId, Date: time.Now()})
-
+	db.Create(post)
 }
 
 // Fonction pour ajouter un commentaire
@@ -89,28 +100,11 @@ func GetAllPosts(db *gorm.DB) ([]Posts, error) {
 
 	return posts, nil
 }
+func GetPostByID(postID string, db *gorm.DB) (*Posts, error) {
+	var post Posts
+	if err := db.Where("posts_id = ?", postID).Preload("CommentsUser").First(&post).Error; err != nil {
+		return nil, err
+	}
 
-// // Fonction pour afficher tous les utilisateurs
-// func ShowUsers(db *gorm.DB) {
-// 	// Affichage des utilisateurs
-// 	var users []Users
-// 	db.Find(&users)
-// 	fmt.Println(users)
-// }
-
-// // Fonction pour afficher tous les posts
-// func ShowPosts(db *gorm.DB) {
-
-// 	// Affichage des posts
-// 	var posts []Posts
-// 	db.Find(&posts)
-// 	fmt.Println(posts)
-// }
-
-// // Fonction pour afficher tous les commentaires
-// func ShowComments(db *gorm.DB) {
-// 	// Affichage des commentaires
-// 	var comments []Comments
-// 	db.Find(&comments)
-// 	fmt.Println(comments)
-//}
+	return &post, nil
+}

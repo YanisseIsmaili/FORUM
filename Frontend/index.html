@@ -32,6 +32,9 @@
         }
     </style>
 </head>
+<script>
+    
+</script>
 <body>
     <h1>Nerd_mythology</h1>
     <button id="logout-btn">Déconnexion</button>
@@ -48,6 +51,7 @@
                     <span class="tag tag-blue">{{.Theme}} </span>
                     <h4>{{.TitlePost}}</h4>
                     <p>{{.ContentCategory}}</p>
+                    {{.PostsID}}
                     
                 </div>
                 <div class="card__footer">
@@ -69,7 +73,8 @@
         <div class="commentaire" id="comment-container"></div>
         <form action="/comments" method="POST" name="commentaire" id="comment-form">
             <input type="text" placeholder="Add a new Comment" name="comment">
-            <input type="hidden" name="postID" value="{{.PostsID}}">
+            <input type="hidden" name="PostsID" value="{{ .PostsID }}">
+
             <button type="submit">Commenter</button>
         </form>
         <script>
@@ -90,7 +95,7 @@
             function showComments(postID) {
                 // Effectuer une requête AJAX pour récupérer les commentaires
                 $.ajax({
-                    url: "/comments/" + postID, // Remplacez "/comments/" par l'URL réelle de votre route
+                    url: "/comments/" +encodeURIComponent(postID), // Remplacez "/comments/" par l'URL réelle de votre route
                     method: "GET",
                     success: function(response) {
                         // Mettre à jour le contenu du modal avec les commentaires récupérés
@@ -121,40 +126,49 @@
 
             // Ajouter le gestionnaire d'événements au bouton de fermeture du modal
             closeBtn.addEventListener("click", closeModal);
+
         </script>
         <script>
-            // Supposons que vous ayez un formulaire de commentaire avec l'ID "comment-form"
-            document.getElementById("comment-form").addEventListener("submit", function(event) {
-                event.preventDefault(); // Empêche le comportement par défaut du formulaire
+document.getElementById("comment-form").addEventListener("submit", function(event) {
+    event.preventDefault(); // Empêche le comportement par défaut du formulaire
 
-                // Récupère les données du formulaire
-                var commentContent = document.querySelector("#comment-form input[name='comment']").value;
-                var postID = document.querySelector("#comment-form input[name='postID']").value;
+    // Récupère les données du formulaire
+    var commentContent = document.querySelector("#comment-form input[name='comment']").value;
+    var postID = document.querySelector("#comment-form input[name='PostsID']").value;
 
-                // Crée un objet contenant les données du commentaire
-                var commentData = {
-                    comment: commentContent,
-                    postID: postID
-                };
+    // Crée un objet contenant les données du commentaire
+    var commentData = {
+        comment: commentContent,
 
-                // Envoie la requête POST vers la route de commentaires avec les données au format JSON
-                $.ajax({
-                    url: "/comments",
-                    type: "POST",
-                    dataType: "json",
-                    data: JSON.stringify(commentData),
-                    contentType: "application/json",
-                    success: function(response) {
-                        // Traite la réponse de la route de commentaires
-                        // Par exemple, met à jour l'affichage des commentaires
-                        var commentContainer = document.getElementById("comment-container");
-                        // Mettez à jour commentContainer avec la nouvelle réponse de commentaire
-                    },
-                    error: function(error) {
-                        // Gère les erreurs de la requête
-                    }
-                });
-            });
+    };
+
+    var postID = document.querySelector("form[name='commentaire'] input[name='PostsID']").value;
+
+    // Envoie la requête POST vers la route de commentaires avec les données au format JSON
+    $.ajax({
+        url: "/comments",
+        type: "POST",
+        dataType: "json",
+        data: JSON.stringify(commentData),
+        contentType: "application/json",
+        success: function(response) {
+            // Traite la réponse de la route de commentaires
+            // Par exemple, met à jour l'affichage des commentaires
+            var commentContainer = document.getElementById("comment-container");
+            // Mettez à jour commentContainer avec la nouvelle réponse de commentaire
+            
+            // Gérez la réponse du serveur ici
+            console.log("Commentaire envoyé avec succès !");
+            console.log(response); // Affichez la réponse du serveur dans la console
+            // Effectuez les mises à jour nécessaires sur la page
+        },
+        error: function(error) {
+            // Gère les erreurs de la requête
+            console.log("Erreur lors de l'envoi du commentaire :", error);
+        }
+    });
+});
+        
         </script>
     </div>
 </body>
