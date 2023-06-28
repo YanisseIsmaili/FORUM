@@ -15,7 +15,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const IndexURL = "/index"
+const IndexURL = "/index" // test
 
 func main() {
 	service.Test()
