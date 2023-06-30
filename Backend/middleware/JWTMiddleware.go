@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	service "Forum/Backend/Service"
+	service "Forum/Backend/service"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"

@@ -78,7 +78,7 @@
       </script>
    </body>
    <!--  hash le mot de passe REGISTER -->
-   <!-- <script>
+   <script>
       var signUpForm = document.querySelector(".sign-up-container form");
       signUpForm.addEventListener("submit", function(event) {
          event.preventDefault();
@@ -92,11 +92,12 @@
       
          // Mettre à jour la valeur du champ de mot de passe avec le mot de passe haché
          passwordField.value = hashedPassword;
-         var password2 = passwordField2.value;
+         passwordField2.value = hashedPassword;
+         //var password2 = passwordField.value;
       
       });
-      </script> -->
-   <!-- hash le mot de passe LOGIN mais ne marche pas :()
+      </script> 
+      <!--  hash le mot de passe LOGIN -->
       <script>
          var signUpForm = document.querySelector(".login-container form");
          signUpForm.addEventListener("submit", function(event) {
@@ -114,5 +115,5 @@
             // Soumettre le formulaire d'inscription
             
          });
-      </script> -->
+      </script> 
 </html>

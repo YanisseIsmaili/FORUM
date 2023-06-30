@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	database "Forum/Backend/Database"
-	service "Forum/Backend/Service"
+	service "Forum/Backend/service"
 	"Forum/Backend/controller"
 
 	"github.com/gin-gonic/gin"
